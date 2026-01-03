@@ -341,12 +341,30 @@ public final class SkillConstants {
             // CUserLocal::DoActiveSkill_Summon
             return true;
         }
+        if(isEquipSkillFinalAttackShadowSkill(skillId)){
+            // 终极幻影
+            return true;
+        }
         switch (skillId) {
             case Thief.SMOKESCREEN, BattleMage.PARTY_SHIELD: // CUserLocal::DoActiveSkill_SmokeShell
             case Magician.MYSTIC_DOOR: // CUserLocal::DoActiveSkill_TownPortal
             case Evan.RECOVERY_AURA: // CUserLocal::DoActiveSkill_RecoverAura
             case Citizen.CALL_OF_THE_HUNTER: // CUserLocal::DoActiveSkill_SummonMonster
             case Mechanic.OPEN_PORTAL_GX_9: // CUserLocal::DoActiveSkill_OpenGate
+                return true;
+            default:
+                return false;
+        }
+    }
+
+    public static boolean isEquipSkillFinalAttackShadowSkill(int skillID){
+        switch(skillID){
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_HERO_SWORD:
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_HERO_AXE:
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_PALADIN_SWORD:
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_PALADIN_BLUNT:
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_SPEAR:
+            case Warrior.EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM:
                 return true;
             default:
                 return false;
@@ -416,6 +434,9 @@ public final class SkillConstants {
 
     public static boolean isSummonSkill(int skillId) {
         // Usages of CUserLocal::DoActiveSkill_Summon
+        if(isEquipSkillFinalAttackShadowSkill(skillId)){
+            return true;
+        }
         switch (skillId) {
             // CUserLocal::DoActiveSkill
             case Warrior.BEHOLDER:

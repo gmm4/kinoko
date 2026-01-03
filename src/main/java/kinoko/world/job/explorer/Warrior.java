@@ -40,6 +40,8 @@ public final class Warrior extends SkillProcessor {
     public static final int RAGE = 1101006;
     public static final int POWER_GUARD_HERO = 1101007;
     public static final int GROUND_SMASH_HERO = 1101008;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_HERO_SWORD = 1100102;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_HERO_AXE = 1100202;
     // CRUSADER
     public static final int IMPROVING_MP_RECOVERY = 1110000;
     public static final int CHANCE_ATTACK = 1110009;
@@ -68,6 +70,8 @@ public final class Warrior extends SkillProcessor {
     public static final int THREATEN = 1201006;
     public static final int POWER_GUARD_PALADIN = 1201007;
     public static final int GROUND_SMASH_PALADIN = 1201008;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_PALADIN_SWORD = 1200102;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_PALADIN_BLUNT = 1200202;
     // WHITE_KNIGHT
     public static final int SHIELD_MASTERY = 1210001;
     public static final int CHARGED_BLOW = 1211002;
@@ -97,6 +101,8 @@ public final class Warrior extends SkillProcessor {
     public static final int IRON_WILL = 1301006;
     public static final int HYPER_BODY = 1301007;
     public static final int GROUND_SMASH_DRK = 1301008;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_SPEAR = 1300102; // 终极枪 - 终极幻影
+    public static final int EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM = 1300202; // 终极矛 - 终极幻影
     // DRAGON_KNIGHT
     public static final int ELEMENTAL_RESISTANCE = 1310000;
     public static final int DRAGON_WISDOM = 1310009;
@@ -170,6 +176,16 @@ public final class Warrior extends SkillProcessor {
             case POWER_STANCE_PALADIN:
             case POWER_STANCE_DRK:
                 user.setTemporaryStat(CharacterTemporaryStat.Stance, TemporaryStatOption.of(si.getValue(SkillStat.prop, slv), skillId, si.getDuration(slv)));
+                return;
+            case EQUIP_SKILL_FINAL_ATTACK_HERO_SWORD: // 终极剑 - 终极幻影
+            case EQUIP_SKILL_FINAL_ATTACK_HERO_AXE:
+            case EQUIP_SKILL_FINAL_ATTACK_PALADIN_SWORD:
+            case EQUIP_SKILL_FINAL_ATTACK_PALADIN_BLUNT:
+            case EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_SPEAR:
+            case EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM:
+                final Summoned summoned = new Summoned(skillId, slv, SummonedMoveAbility.STOP, SummonedAssistType.NONE, user.getCharacterData().getAvatarLook(), Instant.now().plus(si.getDuration(slv), ChronoUnit.MILLIS));
+                summoned.setPosition(field, skill.positionX, skill.positionY, skill.summonLeft);
+                user.addSummoned(summoned);
                 return;
 
             // HERO
