@@ -76,6 +76,10 @@ public final class SkillHandler {
             if (SkillConstants.isSummonSkill(skill.skillId)) {
                 // CUserLocal::DoActiveSkill_Summon
                 skill.summonLeft = inPacket.decodeBoolean();
+                // 终极幻影
+                if(SkillConstants.isEquipSkillFinalAttackShadowSkill(skill.skillId)){
+                    skill.summonFinalShadowSkillId = inPacket.decodeInt();
+                }
             }
         }
         if (skill.skillId == Thief.SHADOW_STARS) {

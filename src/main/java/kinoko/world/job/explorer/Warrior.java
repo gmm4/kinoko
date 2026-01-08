@@ -185,6 +185,7 @@ public final class Warrior extends SkillProcessor {
             case EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM:
                 final Summoned summoned = new Summoned(skillId, slv, SummonedMoveAbility.STOP, SummonedAssistType.NONE, user.getCharacterData().getAvatarLook(), Instant.now().plus(si.getDuration(slv), ChronoUnit.MILLIS));
                 summoned.setPosition(field, skill.positionX, skill.positionY, skill.summonLeft);
+                summoned.setFinalShadowSkillId(skill.summonFinalShadowSkillId);
                 user.addSummoned(summoned);
                 return;
 

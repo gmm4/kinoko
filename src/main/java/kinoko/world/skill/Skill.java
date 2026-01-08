@@ -30,6 +30,7 @@ public final class Skill {
     public boolean left;
     public boolean summonLeft;
     public byte summonBuffType;
+    public int summonFinalShadowSkillId;
 
     // UserThrowGrenade
     public int keyDown;

@@ -19,6 +19,8 @@ import kinoko.world.user.User;
 import kinoko.world.user.stat.CharacterTemporaryStat;
 import kinoko.world.user.stat.TemporaryStatOption;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 
 public final class Bowman extends SkillProcessor {
@@ -36,6 +38,7 @@ public final class Bowman extends SkillProcessor {
     public static final int POWER_KNOCKBACK_BM = 3101003;
     public static final int SOUL_ARROW_BM = 3101004;
     public static final int ARROW_BOMB = 3101005;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_BOW = 3100101;
     // RANGER
     public static final int THRUST_BM = 3110000;
     public static final int MORTAL_BLOW_BM = 3110001;
@@ -65,6 +68,7 @@ public final class Bowman extends SkillProcessor {
     public static final int POWER_KNOCKBACK_MM = 3201003;
     public static final int SOUL_ARROW_MM = 3201004;
     public static final int IRON_ARROW = 3201005;
+    public static final int EQUIP_SKILL_FINAL_ATTACK_CROSSBOW = 3200101;
     // SNIPER
     public static final int THRUST_MM = 3210000;
     public static final int MORTAL_BLOW_MM = 3210001;
@@ -125,6 +129,13 @@ public final class Bowman extends SkillProcessor {
 
         final Field field = user.getField();
         switch (skillId) {
+            case EQUIP_SKILL_FINAL_ATTACK_BOW:
+            case EQUIP_SKILL_FINAL_ATTACK_CROSSBOW:
+                final Summoned summoned = new Summoned(skillId, slv, SummonedMoveAbility.STOP, SummonedAssistType.NONE, user.getCharacterData().getAvatarLook(), Instant.now().plus(si.getDuration(slv), ChronoUnit.MILLIS));
+                summoned.setPosition(field, skill.positionX, skill.positionY, skill.summonLeft);
+                summoned.setFinalShadowSkillId(skill.summonFinalShadowSkillId);
+                user.addSummoned(summoned);
+                return;
             case SILVER_HAWK:
             case GOLDEN_EAGLE:
             case PHOENIX:

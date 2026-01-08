@@ -24,6 +24,7 @@ public final class SummonedPacket {
         outPacket.encodeByte(user.getLevel()); // nCharLevel
         outPacket.encodeByte(summoned.getSkillLevel()); // nSLV
         // CSummoned::Init
+        outPacket.encodeInt(summoned.getFinalShadowSkillId()); // 自定义技改 终极幻影触发时的前置技能ID
         outPacket.encodeShort(summoned.getX()); // nX
         outPacket.encodeShort(summoned.getY()); // nY
         outPacket.encodeByte(summoned.getMoveAction()); // nMoveAction

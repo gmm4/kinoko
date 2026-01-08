@@ -17,6 +17,7 @@ public final class Summoned extends Life {
     private final SummonedAssistType assistType;
     private final AvatarLook avatarLook;
     private final Instant expireTime;
+    private int finalShadowSkillId = 0;
 
     private SummonedEnterType enterType = SummonedEnterType.CREATE_SUMMONED;
     private SummonedLeaveType leaveType = SummonedLeaveType.LEAVE_FIELD;
@@ -104,6 +105,10 @@ public final class Summoned extends Life {
         setLeft(left);
         setFoothold(field.getFootholdBelow(x, y).map(Foothold::getSn).orElse(0));
     }
+
+    public void setFinalShadowSkillId(int skillId) { this.finalShadowSkillId = skillId; }
+
+    public int getFinalShadowSkillId() { return finalShadowSkillId; }
 
     @Override
     public String toString() {

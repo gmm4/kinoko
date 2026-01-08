@@ -365,6 +365,8 @@ public final class SkillConstants {
             case Warrior.EQUIP_SKILL_FINAL_ATTACK_PALADIN_BLUNT:
             case Warrior.EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_SPEAR:
             case Warrior.EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM:
+            case Bowman.EQUIP_SKILL_FINAL_ATTACK_BOW:
+            case Bowman.EQUIP_SKILL_FINAL_ATTACK_CROSSBOW:
                 return true;
             default:
                 return false;
@@ -511,6 +513,9 @@ public final class SkillConstants {
     }
 
     public static boolean isSummonMultipleSkill(int skillId) {
+        if(isEquipSkillFinalAttackShadowSkill(skillId)){
+            return true;
+        }
         switch (skillId) {
             case BattleMage.SUMMON_REAPER_BUFF:
             case WildHunter.ITS_RAINING_MINES_HIDDEN:
