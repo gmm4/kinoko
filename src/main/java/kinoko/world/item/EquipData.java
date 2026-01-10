@@ -125,6 +125,14 @@ public final class EquipData {
 
         outPacket.encodeFT(FileTime.ZERO_TIME); // ftEquipped
         outPacket.encodeInt(0); // nPrevBonusExpRate
+
+        // 幸运技能
+        outPacket.encodeInt(1221); // equipSkill.nSkillID
+        outPacket.encodeInt(1); // equipSkill.nSLV
+        //outPacket.encodeFT(FileTime.ZERO_TIME); // equipSkill.tDateExpire
+        outPacket.encodeInt(0);
+        outPacket.encodeInt(0);
+
     }
 
     public short getIncStr() {
