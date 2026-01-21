@@ -547,8 +547,8 @@ public final class EquipData {
                 }
             }
         }
-        equipData.setEquipSkillId(1221);
-        equipData.setEquipSkillLevel(1);
+        equipData.setEquipSkillId(0);
+        equipData.setEquipSkillLevel(0);
         equipData.setEquipSkillExpire(null);
         return equipData;
     }
