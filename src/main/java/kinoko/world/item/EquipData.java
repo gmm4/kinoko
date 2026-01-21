@@ -7,6 +7,7 @@ import kinoko.server.packet.OutPacket;
 import kinoko.util.FileTime;
 import kinoko.util.Util;
 
+import java.time.Instant;
 import java.util.Map;
 
 public final class EquipData {
@@ -42,6 +43,11 @@ public final class EquipData {
     private byte level;
     private int exp;
     private int durability = -1;
+
+    // 幸运技能
+    private int equipSkillId;
+    private int equipSkillLevel;
+    private Instant equipSkillExpire;
 
     public EquipData() {
     }
@@ -79,6 +85,10 @@ public final class EquipData {
         this.level = equipData.level;
         this.exp = equipData.exp;
         this.durability = equipData.durability;
+
+        this.equipSkillId = equipData.equipSkillId;
+        this.equipSkillLevel = equipData.equipSkillLevel;
+        this.equipSkillExpire = equipData.equipSkillExpire;
     }
 
     public void encode(OutPacket outPacket, Item item) {
@@ -126,12 +136,9 @@ public final class EquipData {
         outPacket.encodeFT(FileTime.ZERO_TIME); // ftEquipped
         outPacket.encodeInt(0); // nPrevBonusExpRate
 
-        // 幸运技能
-        outPacket.encodeInt(1221); // equipSkill.nSkillID
-        outPacket.encodeInt(1); // equipSkill.nSLV
-        //outPacket.encodeFT(FileTime.ZERO_TIME); // equipSkill.tDateExpire
-        outPacket.encodeInt(0);
-        outPacket.encodeInt(0);
+        outPacket.encodeInt(getEquipSkillId()); // equipSkill.nSkillID
+        outPacket.encodeInt(getEquipSkillLevel()); // equipSkill.nSLV
+        outPacket.encodeFT(getEquipSkillExpire()); // equipSkill.tDateExpire
 
     }
 
@@ -367,6 +374,17 @@ public final class EquipData {
         this.durability = durability;
     }
 
+    public int getEquipSkillId() { return equipSkillId; }
+
+    public void setEquipSkillId(int equipSkillId) { this.equipSkillId = equipSkillId; }
+
+    public int getEquipSkillLevel() { return equipSkillLevel; }
+
+    public void setEquipSkillLevel(int equipSkillLevel) { this.equipSkillLevel = equipSkillLevel; }
+
+    public Instant getEquipSkillExpire() { return equipSkillExpire; }
+
+    public void setEquipSkillExpire(Instant equipSkillExpire) { this.equipSkillExpire = equipSkillExpire; }
 
     // HELPER METHODS --------------------------------------------------------------------------------------------------
 
@@ -529,6 +547,9 @@ public final class EquipData {
                 }
             }
         }
+        equipData.setEquipSkillId(1221);
+        equipData.setEquipSkillLevel(1);
+        equipData.setEquipSkillExpire(null);
         return equipData;
     }
 }

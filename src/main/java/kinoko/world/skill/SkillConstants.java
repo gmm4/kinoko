@@ -357,6 +357,10 @@ public final class SkillConstants {
         }
     }
 
+    public static boolean isEquipSkill(int skillId){
+        return ( skillId / 100 % 10 != 0 )&&( skillId != 4001334 && skillId != 4001344 );
+    }
+
     public static boolean isEquipSkillFinalAttackShadowSkill(int skillID){
         switch(skillID){
             case Warrior.EQUIP_SKILL_FINAL_ATTACK_HERO_SWORD:

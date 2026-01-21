@@ -53,6 +53,9 @@ public final class EquipDataCodec extends MappingCodec<UdtValue, EquipData> {
         equipData.setLevel(value.getByte(EquipDataUDT.LEVEL));
         equipData.setExp(value.getInt(EquipDataUDT.EXP));
         equipData.setDurability(value.getInt(EquipDataUDT.DURABILITY));
+        equipData.setEquipSkillId(value.getInt(EquipDataUDT.EQUIP_SKILL_ID));
+        equipData.setEquipSkillLevel(value.getInt(EquipDataUDT.EQUIP_SKILL_LEVEL));
+        equipData.setEquipSkillExpire(value.getInstant(EquipDataUDT.EQUIP_SKILL_EXPIRE));
         return equipData;
     }
 
@@ -90,6 +93,9 @@ public final class EquipDataCodec extends MappingCodec<UdtValue, EquipData> {
                 .setByte(EquipDataUDT.LEVEL_UP_TYPE, equipData.getLevelUpType())
                 .setByte(EquipDataUDT.LEVEL, equipData.getLevel())
                 .setInt(EquipDataUDT.EXP, equipData.getExp())
-                .setInt(EquipDataUDT.DURABILITY, equipData.getDurability());
+                .setInt(EquipDataUDT.DURABILITY, equipData.getDurability())
+                .setInt(EquipDataUDT.EQUIP_SKILL_ID, equipData.getEquipSkillId())
+                .setInt(EquipDataUDT.EQUIP_SKILL_LEVEL, equipData.getEquipSkillLevel())
+                .setInstant(EquipDataUDT.EQUIP_SKILL_EXPIRE, equipData.getEquipSkillExpire());
     }
 }

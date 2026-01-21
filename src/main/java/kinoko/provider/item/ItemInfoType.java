@@ -71,6 +71,9 @@ public enum ItemInfoType {
     incReqLevel,
     incRandVol,
     incPERIOD,
+    equipSkillId,
+    equipSkillLevel,
+    equipSkillExpire,
 
     success,
     cursed,

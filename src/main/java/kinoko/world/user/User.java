@@ -7,6 +7,7 @@ import kinoko.packet.user.UserLocal;
 import kinoko.packet.user.UserRemote;
 import kinoko.packet.world.FriendPacket;
 import kinoko.packet.world.WvsContext;
+import kinoko.provider.ItemProvider;
 import kinoko.provider.SkillProvider;
 import kinoko.provider.WzProvider;
 import kinoko.provider.item.ItemInfo;
@@ -37,6 +38,7 @@ import kinoko.world.quest.QuestManager;
 import kinoko.world.skill.PassiveSkillData;
 import kinoko.world.skill.SkillConstants;
 import kinoko.world.skill.SkillManager;
+import kinoko.world.skill.SkillRecord;
 import kinoko.world.user.data.ConfigManager;
 import kinoko.world.user.data.MapTransferInfo;
 import kinoko.world.user.data.MiniGameRecord;
@@ -452,9 +454,48 @@ public final class User extends Life {
         getPassiveSkillData().setFrom(getBasicStat(), getSecondaryStat(), getSkillManager());
     }
 
-    public void validateStat() {
+    public void updateEquipSkill(){
+
+        // CharacterData->mSkillRecord has not been initialized
+        if(getField() == null) { return; }
+
         // get_real_equip
         final Map<Integer, Item> realEquip = EquipStat.getRealEquip(this);
+
+        // Store snapshot of old equipSkillRecords
+        final SkillManager sm = getSkillManager();
+        final Map<Integer, Integer> oldEquipSkillRecords = new HashMap<>(sm.getEquipSkillRecords());
+
+        // update latest equipSkill
+        sm.getEquipSkillRecords().clear();
+        for (var item: realEquip.values()){
+            final int skillId = item.getEquipData().getEquipSkillId();
+            final int skillLevel = item.getEquipData().getEquipSkillLevel();
+            if(skillId > 0){
+                sm.getEquipSkillRecords().merge(skillId, skillLevel, Math::max);
+            }
+        }
+
+        // diff the equipSkill and send packet
+        sm.getEquipSkillRecords().forEach((skillId, newLevel) -> {
+            if(!newLevel.equals(oldEquipSkillRecords.get(skillId))){
+                write(WvsContext.changeSkillRecordResult(new SkillRecord(skillId, newLevel), true));
+            }
+        });
+        oldEquipSkillRecords.keySet().forEach(skillId -> {
+            if(!sm.getEquipSkillRecords().containsKey(skillId)){
+                write(WvsContext.changeSkillRecordResult(new SkillRecord(skillId, 0), true));
+            }
+        });
+    }
+
+    public void validateStat() {
+
+        // get_real_equip
+        final Map<Integer, Item> realEquip = EquipStat.getRealEquip(this);
+
+        // Update equip skill
+        updateEquipSkill();
 
         // BasicStat::SetFrom
         getBasicStat().setFrom(getCharacterStat(), getForcedStat(), getSecondaryStat(), getSkillManager(), getPassiveSkillData(), realEquip);
@@ -798,6 +839,7 @@ public final class User extends Life {
 
     private void completeWarp(Field destination, boolean isMigrate, boolean isRevive) {
         write(StagePacket.setField(this, getChannelId(), isMigrate, isRevive));
+        this.validateStat();
         destination.addUser(this);
         getConnectedServer().notifyUserUpdate(this);
     }

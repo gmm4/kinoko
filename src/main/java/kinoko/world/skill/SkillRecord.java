@@ -1,5 +1,7 @@
 package kinoko.world.skill;
 
+import java.time.Instant;
+
 public final class SkillRecord {
     private final int skillId;
     private int skillLevel;
@@ -7,6 +9,12 @@ public final class SkillRecord {
 
     public SkillRecord(int skillId) {
         this.skillId = skillId;
+    }
+
+    public SkillRecord(int skillId, int skillLevel) {
+        this.skillId = skillId;
+        this.skillLevel = skillLevel;
+        this.masterLevel = 0;
     }
 
     public int getSkillId() {
@@ -28,4 +36,5 @@ public final class SkillRecord {
     public void setMasterLevel(int masterLevel) {
         this.masterLevel = masterLevel;
     }
+
 }

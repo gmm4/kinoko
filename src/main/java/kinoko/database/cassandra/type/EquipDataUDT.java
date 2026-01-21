@@ -38,6 +38,10 @@ public final class EquipDataUDT {
     public static final String EXP = "exp";
     public static final String DURABILITY = "durability";
 
+    public static final String EQUIP_SKILL_ID = "equip_skill_id";
+    public static final String EQUIP_SKILL_LEVEL = "equip_skill_level";
+    public static final String EQUIP_SKILL_EXPIRE = "equip_skill_expire";
+
     private static final String typeName = "equip_data_type";
 
     public static String getTypeName() {
@@ -77,6 +81,9 @@ public final class EquipDataUDT {
                         .withField(LEVEL, DataTypes.TINYINT)
                         .withField(EXP, DataTypes.INT)
                         .withField(DURABILITY, DataTypes.INT)
+                        .withField(EQUIP_SKILL_ID, DataTypes.INT)
+                        .withField(EQUIP_SKILL_LEVEL, DataTypes.INT)
+                        .withField(EQUIP_SKILL_EXPIRE, DataTypes.TIMESTAMP)
                         .build()
         );
     }

@@ -120,6 +120,8 @@ public final class ItemInfo {
         return getInfo(ItemInfoType.accountSharable) != 0;
     }
 
+    public boolean isEquipSkill(int skillId) { return (skillId / 100 % 10 != 0) && (skillId != 4001334 && skillId != 4001344); }
+
     public boolean isAbleToEquip(int gender, int level, int job, int subJob, int totalStr, int totalDex, int totalInt, int totalLuk, int pop, int durability, int weaponId, int petTemplateId) {
         // Check durability
         if (getInfo(ItemInfoType.durability) > 0 && durability == 0) {

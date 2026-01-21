@@ -16,6 +16,8 @@ public final class SkillManager {
     private final Map<Integer, Instant> skillCooltimes = new HashMap<>();
     private final Map<Integer, Instant> skillSchedules = new HashMap<>();
 
+    private final Map<Integer, Integer> equipSkillRecords = new HashMap<>();
+
     // SKILL RECORD METHODS --------------------------------------------------------------------------------------------
 
     public List<SkillRecord> getSkillRecords() {
@@ -49,6 +51,10 @@ public final class SkillManager {
     public void setSkillCooltime(int skillId, Instant nextAvailable) {
         skillCooltimes.put(skillId, nextAvailable);
     }
+
+    // EQUIP SKILL METHODS
+
+    public Map<Integer, Integer> getEquipSkillRecords() { return equipSkillRecords; }
 
 
     // STATIC METHODS --------------------------------------------------------------------------------------------------

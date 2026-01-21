@@ -10,6 +10,7 @@ import kinoko.world.GameConstants;
 import kinoko.world.field.TownPortal;
 import kinoko.world.item.*;
 import kinoko.world.quest.QuestRecord;
+import kinoko.world.skill.SkillConstants;
 import kinoko.world.skill.SkillRecord;
 import kinoko.world.user.Pet;
 import kinoko.world.user.User;

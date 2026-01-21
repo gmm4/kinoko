@@ -24,6 +24,7 @@ import kinoko.server.ServerConfig;
 import kinoko.server.cashshop.CashShop;
 import kinoko.server.cashshop.Commodity;
 import kinoko.util.BitFlag;
+import kinoko.util.FileTime;
 import kinoko.util.Rect;
 import kinoko.util.Util;
 import kinoko.world.GameConstants;
@@ -482,6 +483,51 @@ public final class AdminCommands {
         } else if (args[1].equalsIgnoreCase("false")) {
             user.getField().setMobSpawn(false);
             user.write(MessagePacket.system("Disabled mob spawns"));
+        }
+    }
+
+    @Command("equip")
+    @Arguments("equip ID")
+    public static void equip(User user, String[] args){
+        final int equipId = Integer.parseInt(args[1]);
+        int equipSkillId = 0, equipSkillLevel = 0;
+        if(args.length > 2){
+            equipSkillId = Integer.parseInt(args[2]);
+            if(args.length > 3){
+                equipSkillLevel = Integer.parseInt(args[3]);
+            }
+        }
+        final Optional<ItemInfo> itemInfoResult = ItemProvider.getItemInfo(equipId);
+        if (itemInfoResult.isEmpty()) {
+            user.write(MessagePacket.system("Could not resolve item ID : %d", equipId));
+            return;
+        }
+        final ItemInfo ii = itemInfoResult.get();
+        final Item item = ii.createItem(user.getNextItemSn(), Math.min(1, ii.getSlotMax()), ItemVariationOption.NORMAL);
+        // Set equip skill
+        if(equipSkillId > 0){
+            final Optional<SkillInfo> skillInfoResult = SkillProvider.getSkillInfoById(equipSkillId);
+            if (skillInfoResult.isEmpty()) {
+                user.write(MessagePacket.system("Could not find skill : %d", equipSkillId));
+                return;
+            }
+            final SkillInfo si = skillInfoResult.get();
+            final SkillRecord skillRecord = new SkillRecord(si.getSkillId());
+            equipSkillLevel = Math.min(equipSkillLevel, si.getMaxLevel());
+            if(item.getItemType() == ItemType.EQUIP){
+                item.getEquipData().setEquipSkillId(equipSkillId);
+                item.getEquipData().setEquipSkillLevel(equipSkillLevel);
+                item.getEquipData().setEquipSkillExpire(null);
+            }
+        }
+        // Add item
+        final InventoryManager im = user.getInventoryManager();
+        final Optional<List<InventoryOperation>> addItemResult = im.addItem(item);
+        if (addItemResult.isPresent()) {
+            user.write(WvsContext.inventoryOperation(addItemResult.get(), true));
+            user.write(UserLocal.effect(Effect.gainItem(item)));
+        } else {
+            user.write(MessagePacket.system("Failed to add item ID %d (%d) to inventory", equipId));
         }
     }
 
