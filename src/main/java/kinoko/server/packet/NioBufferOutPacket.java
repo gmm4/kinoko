@@ -7,6 +7,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
@@ -92,13 +93,16 @@ public final class NioBufferOutPacket implements OutPacket {
         if (value == null) {
             value = "";
         }
-        if (value.length() > Short.MAX_VALUE) {
+        //byte[] bytes = value.getBytes(StandardCharsets.UTF_8);
+        byte[] bytes = value.getBytes(Charset.forName("GBK"));
+        if (bytes.length > Short.MAX_VALUE) {
             log.error("Encoding a string that is too long, string will be truncated");
         }
-        final int length = Math.min(value.length(), Short.MAX_VALUE);
-        ensureSize(2 + length);
-        getBuffer().putShort((short) value.length());
-        getBuffer().put(value.getBytes(StandardCharsets.US_ASCII));
+        //final int length = Math.min(value.length(), Short.MAX_VALUE);
+        ensureSize(2 + Math.min(bytes.length, Short.MAX_VALUE - 2));
+        getBuffer().putShort((short) bytes.length);
+        getBuffer().put(bytes);
+        //getBuffer().put(value.getBytes(StandardCharsets.US_ASCII));
     }
 
     @Override

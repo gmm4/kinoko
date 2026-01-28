@@ -895,6 +895,24 @@ public final class User extends Life {
         }
     }
 
+    // 传入原始技能ID和幸运技能ID，判断幸运技能是否满足前置条件
+    public boolean isEquipSkillActive(int nSkillID, int nEquipSkillID){
+        switch (nEquipSkillID){
+            // 无需前置条件的幸运技能
+            case 1001104: // 战士 强力攻击 蓝耗降低
+            case 2001104: // 法师 魔法弹 蓝耗降低
+            case 3001104: // 弓箭手 断魂箭 蓝耗降低
+            case 3001105: // 弓箭手 二连箭 蓝耗降低
+            case 4001434: // 飞侠 二连击 蓝耗降低
+            case 4001444: // 飞侠 双飞斩 蓝耗降低
+            case 5001102: // 海盗 半月踢 蓝耗降低
+            case 5001103: // 海盗 双弹射击 蓝耗降低
+                return true;
+        }
+        return false;
+    }
+
+
 
     // OVERRIDES -------------------------------------------------------------------------------------------------------
 

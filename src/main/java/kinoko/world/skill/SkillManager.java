@@ -61,8 +61,13 @@ public final class SkillManager {
 
     public static int getSkillLevel(SecondaryStat ss, SkillManager sm, int skillId) {
         final SkillRecord skillRecord = sm.skillRecords.get(skillId);
+        final Integer equipSkillLevel = sm.equipSkillRecords.get(skillId);
         if (skillRecord == null || skillRecord.getSkillLevel() == 0) {
-            return 0;
+            if(equipSkillLevel == null || equipSkillLevel == 0){
+                return 0;
+            }else{
+                return equipSkillLevel;
+            }
         }
         if (SkillProvider.getSkillInfoById(skillId).map(SkillInfo::isCombatOrders).orElse(false)) {
             return skillRecord.getSkillLevel() + ss.getOption(CharacterTemporaryStat.CombatOrders).nOption;

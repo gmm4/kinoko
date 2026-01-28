@@ -731,4 +731,28 @@ public final class SkillConstants {
         }
         return jobId % 10 == 2;
     }
+
+    public static int getEquipSkillMpConChangeSkillID(int nSkillID){
+
+        switch(nSkillID){
+            case 1001004: // 战士 强力攻击
+                return 1001104;
+            case 2001004: // 法师 魔法弹
+                return 2001104;
+            case 3001004: // 弓箭手 断魂箭
+                return 3001104;
+            case 3001005: // 弓箭手 二连箭
+                return 3001105;
+            case 4001334: // 飞侠 二连击
+                return 4001434;
+            case 4001344: // 飞侠 双飞斩
+                return 4001444;
+            case 5001002: // 海盗 半月踢
+                return 5001102;
+            case 5001003: // 海盗 双弹射击
+                return 5001103;
+        }
+
+        return 0;
+    }
 }

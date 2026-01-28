@@ -154,6 +154,11 @@ public final class SkillInfo {
     public int getMpCon(User user, int slv) {
         // CSkillInfo::CheckConsumeForActiveSkill
         int mpCon = getValue(SkillStat.mpCon, slv);
+        // Check EquipSkill affecting mpCon 判断蓝耗调整类幸运技能
+        final int mpConEquipSkillID = SkillConstants.getEquipSkillMpConChangeSkillID(skillId);
+        if(mpConEquipSkillID > 0 && user.isEquipSkillActive(skillId, mpConEquipSkillID)) {
+            mpCon += user.getSkillStatValue(mpConEquipSkillID, SkillStat.x);
+        }
         // Check element amplification
         final int amplificationSkill = SkillConstants.getAmplificationSkill(user.getJob());
         if (amplificationSkill != 0) {

@@ -16,7 +16,8 @@ public final class ExplorerTutorial extends ScriptHandler {
     public static void tutorialSkip(ScriptManager sm) {
         // Maple Administrator (2007)
         //   Maple Road : Mushroom Park (10000)
-        if (sm.askYesNo("Would you like to skip the tutorials and head straight to Lith Harbor?")) {
+        //if (sm.askYesNo("Would you like to skip the tutorials and head straight to Lith Harbor?")) {
+        if (sm.askYesNo("你想要跳过新手教程并直接前往南港吗？")) {
             sm.warp(104000000); // Lith Harbor : Lith Harbor
         } else {
             sm.sayNext("Enjoy your trip.");
