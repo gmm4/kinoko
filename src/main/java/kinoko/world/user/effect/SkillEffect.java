@@ -15,6 +15,7 @@ public final class SkillEffect extends Effect {
     public int info;
     public int positionX;
     public int positionY;
+    public int equipSkillLevel = 0;
 
     SkillEffect(EffectType type) {
         super(type);
@@ -43,6 +44,10 @@ public final class SkillEffect extends Effect {
                     }
                     case Citizen.CAPTURE -> {
                         outPacket.encodeByte(info); // 0 : monster successfully captured, 1 : capture failed monster hp too high, 2 : monster cannot be captured
+                    }
+                    // EquipSkill Special Decode
+                    case Warrior.IRON_BODY -> {
+                        outPacket.encodeByte(equipSkillLevel);
                     }
                 }
                 if (skillId / 10000000 == 9) { // is_unregistered_skill

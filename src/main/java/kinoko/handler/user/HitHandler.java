@@ -134,7 +134,19 @@ public final class HitHandler {
 
         // Handle dispel
         if (skillType == MobSkillType.DISPEL) {
-            user.resetTemporaryStat((cts, option) -> option.rOption / 1000000 > 0); // SecondaryStat::ResetByUserSkill
+            user.resetTemporaryStat((cts, option) -> {
+                int buffSkillId = option.rOption;
+                if(buffSkillId / 1000000 <= 0){
+                    return false;
+                }
+                SkillConstants.AntiDispelEquipSkill[] antiDispelEquipSkills = SkillConstants.getAntiDispelSkillIDs(buffSkillId);
+                for (SkillConstants.AntiDispelEquipSkill req : antiDispelEquipSkills){
+                    if(user.getSkillLevel(req.skillId()) >= req.level() && user.isEquipSkillActive(buffSkillId, req.skillId())){
+                        return false;
+                    }
+                }
+                return true;
+            }); // SecondaryStat::ResetByUserSkill
             return;
         }
 

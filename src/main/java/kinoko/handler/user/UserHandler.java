@@ -636,6 +636,17 @@ public final class UserHandler {
         }
         final SkillRecord skillRecord = skillRecordResult.get();
 
+        // Check skill req
+        for (var entry : skillInfo.getReqSkills().entrySet()) {
+            final int reqSkillId = entry.getKey();
+            final int reqSkillLevel = entry.getValue();
+            if (user.getSkillLevel(reqSkillId) < reqSkillLevel) {
+                log.error("Tried to add skill {} without the required skill {}", skillId, reqSkillId);
+                user.dispose();
+                return;
+            }
+        }
+
         // Check skill level
         if (SkillConstants.isSkillNeedMasterLevel(skillId)) {
             if (skillRecord.getSkillLevel() >= skillRecord.getMasterLevel()) {

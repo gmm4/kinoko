@@ -732,27 +732,63 @@ public final class SkillConstants {
         return jobId % 10 == 2;
     }
 
-    public static int getEquipSkillMpConChangeSkillID(int nSkillID){
+    public static int[] getEquipSkillMpConChangeSkillIDs(int nSkillID){
+        return switch(nSkillID){
+            case 1001003 -> new int[]{1001103, 1001203}; // 战士 圣甲术
+            case 1001004 -> new int[]{1001104, 1001204}; // 战士 强力攻击
+            case 2001004 -> new int[]{2001104}; // 法师 魔法弹
+            case 3001004 -> new int[]{3001104}; // 弓箭手 断魂箭
+            case 3001005 -> new int[]{3001105}; // 弓箭手 二连箭
+            case 4001334 -> new int[]{4001434}; // 飞侠 二连击
+            case 4001344 -> new int[]{4001444}; // 飞侠 双飞斩
+            case 5001002 -> new int[]{5001102}; // 海盗 半月踢
+            case 5001003 -> new int[]{5001103}; // 海盗 双弹射击
+            default -> new int[0];
+        };
+    }
 
-        switch(nSkillID){
-            case 1001004: // 战士 强力攻击
-                return 1001104;
-            case 2001004: // 法师 魔法弹
-                return 2001104;
-            case 3001004: // 弓箭手 断魂箭
-                return 3001104;
-            case 3001005: // 弓箭手 二连箭
-                return 3001105;
-            case 4001334: // 飞侠 二连击
-                return 4001434;
-            case 4001344: // 飞侠 双飞斩
-                return 4001444;
-            case 5001002: // 海盗 半月踢
-                return 5001102;
-            case 5001003: // 海盗 双弹射击
-                return 5001103;
+    public record AntiDispelEquipSkill(int skillId, int level) {
+    }
+
+    public static AntiDispelEquipSkill[] getAntiDispelSkillIDs(int nBuffSkillId){
+        switch (nBuffSkillId){
+            case 1001003: // 战士 圣甲术
+                return new AntiDispelEquipSkill[]{new AntiDispelEquipSkill(1001103, 3)};
+            case 1121000: // 英雄 冒险岛勇士
+            case 1221000: // 圣骑士 冒险岛勇士
+            case 1321000: // 黑骑士 冒险岛勇士
+            case 2121000: // 火毒魔导 冒险岛勇士
+            case 2221000: // 冰雷魔导 冒险岛勇士
+            case 2321000: // 主教 冒险岛勇士
+            case 3121000: // 神射手 冒险岛勇士
+            case 3221000: // 箭神 冒险岛勇士
+            case 4121000: // 隐士 冒险岛勇士
+            case 4221000: // 侠盗 冒险岛勇士
+            case 5121000: // 冲锋队长 冒险岛勇士
+            case 5221000: // 船长 冒险岛勇士
+                return new AntiDispelEquipSkill[]{
+                        new AntiDispelEquipSkill(1121100,3),
+                        new AntiDispelEquipSkill(1221100,3),
+                        new AntiDispelEquipSkill(1321100,3),
+                        new AntiDispelEquipSkill(2121100,3),
+                        new AntiDispelEquipSkill(2221100,3),
+                        new AntiDispelEquipSkill(2321100,3),
+                        new AntiDispelEquipSkill(3121100,3),
+                        new AntiDispelEquipSkill(3221100,3),
+                        new AntiDispelEquipSkill(4121100,3),
+                        new AntiDispelEquipSkill(4221100,3),
+                        new AntiDispelEquipSkill(5121100,3),
+                        new AntiDispelEquipSkill(5221100,3),
+                };
         }
+        return new AntiDispelEquipSkill[0];
+    }
 
+    public static int getEquipSkillStatChangeSkillId(int nSkillId, CharacterTemporaryStat cts){
+        switch(nSkillId){
+            case 1001003: // 战士 圣甲术
+                return cts == CharacterTemporaryStat.PDD ? 1001203 : 0;
+        }
         return 0;
     }
 }

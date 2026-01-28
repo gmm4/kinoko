@@ -20,6 +20,10 @@ public class Effect implements Encodable {
         this.type = type;
     }
 
+    public EffectType getType(){
+        return this.type;
+    }
+
     @Override
     public void encode(OutPacket outPacket) {
         outPacket.encodeByte(type.getValue());

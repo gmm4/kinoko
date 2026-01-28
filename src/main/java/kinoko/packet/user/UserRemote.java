@@ -12,6 +12,8 @@ import kinoko.world.user.CharacterData;
 import kinoko.world.user.GuildInfo;
 import kinoko.world.user.User;
 import kinoko.world.user.effect.Effect;
+import kinoko.world.user.effect.EffectType;
+import kinoko.world.user.effect.SkillEffect;
 import kinoko.world.user.stat.CharacterTemporaryStat;
 import kinoko.world.user.stat.SecondaryStat;
 
@@ -182,6 +184,17 @@ public final class UserRemote {
     public static OutPacket effect(User user, Effect effect) {
         final OutPacket outPacket = OutPacket.of(OutHeader.UserEffectRemote);
         outPacket.encodeInt(user.getCharacterId());
+        // EquipSkill Special handle starts
+        if(effect instanceof SkillEffect skilleffect){
+            if(skilleffect.getType() == EffectType.SkillUse){
+                switch(skilleffect.skillId){
+                    case 1001003:
+                        skilleffect.equipSkillLevel = user.getSkillLevel(1001203);
+                        break;
+                }
+            }
+        }
+        // EquipSkill Special handle ends
         effect.encode(outPacket);
         return outPacket;
     }

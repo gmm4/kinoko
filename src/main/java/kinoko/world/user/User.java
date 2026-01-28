@@ -14,6 +14,7 @@ import kinoko.provider.item.ItemInfo;
 import kinoko.provider.item.ItemSpecType;
 import kinoko.provider.map.Foothold;
 import kinoko.provider.map.PortalInfo;
+import kinoko.provider.skill.SkillInfo;
 import kinoko.provider.skill.SkillStat;
 import kinoko.server.dialog.Dialog;
 import kinoko.server.dialog.ScriptDialog;
@@ -895,21 +896,38 @@ public final class User extends Life {
         }
     }
 
-    // 传入原始技能ID和幸运技能ID，判断幸运技能是否满足前置条件
-    public boolean isEquipSkillActive(int nSkillID, int nEquipSkillID){
-        switch (nEquipSkillID){
-            // 无需前置条件的幸运技能
-            case 1001104: // 战士 强力攻击 蓝耗降低
-            case 2001104: // 法师 魔法弹 蓝耗降低
-            case 3001104: // 弓箭手 断魂箭 蓝耗降低
-            case 3001105: // 弓箭手 二连箭 蓝耗降低
-            case 4001434: // 飞侠 二连击 蓝耗降低
-            case 4001444: // 飞侠 双飞斩 蓝耗降低
-            case 5001102: // 海盗 半月踢 蓝耗降低
-            case 5001103: // 海盗 双弹射击 蓝耗降低
-                return true;
+    // 传入幸运技能ID，判断幸运技能是否满足WZ配置的前置条件
+    public boolean isEquipSkillMeetRequire(int nEquipSkillID, Map<Integer, Integer> reqSkills){
+        if(reqSkills == null || reqSkills.isEmpty()){
+            return true;
         }
-        return false;
+
+        return reqSkills.entrySet().stream().allMatch(entry -> {
+           int requiredSkillID = entry.getKey();
+           int requiredLevel = entry.getValue();
+           return getSkillLevel(requiredSkillID) >= requiredLevel;
+        });
+    }
+
+    // 传入原始技能ID和幸运技能ID，判断幸运技能是否满足所有前置条件
+    public boolean isEquipSkillActive(int nSkillID, int nEquipSkillID){
+
+        // Resolve skill info
+        Map<Integer, Integer> reqSkills = SkillProvider.getSkillInfoById(nEquipSkillID)
+                .map(SkillInfo::getReqSkills)
+                .orElse(Collections.emptyMap());
+
+        boolean result = isEquipSkillMeetRequire(nEquipSkillID, reqSkills);
+
+        switch (nEquipSkillID){
+            // 特殊情况特殊判断的幸运技能
+            case 1001204:
+            case 1001205:
+                result &= (getSkillLevel(1100002) >= 30 || getSkillLevel(1200002) >= 30 || getSkillLevel(1300002) >= 30);
+                break;
+        }
+
+        return result;
     }
 
 

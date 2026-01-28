@@ -372,7 +372,19 @@ public final class MobHandler {
                     if (prop > 0 && !Util.succeedProp(prop)) {
                         continue;
                     }
-                    targetUser.resetTemporaryStat((stat, option) -> option.rOption / 1000000 > 0); // SecondaryStat::ResetByUserSkill
+                    targetUser.resetTemporaryStat((stat, option) -> {
+                        int buffSkillId = option.rOption;
+                        if(buffSkillId / 1000000 <= 0){
+                            return false;
+                        }
+                        SkillConstants.AntiDispelEquipSkill[] antiDispelEquipSkills = SkillConstants.getAntiDispelSkillIDs(buffSkillId);
+                        for (SkillConstants.AntiDispelEquipSkill req : antiDispelEquipSkills){
+                            if(targetUser.getSkillLevel(req.skillId()) >= req.level() && targetUser.isEquipSkillActive(buffSkillId, req.skillId())){
+                                return false;
+                            }
+                        }
+                        return true;
+                    }); // SecondaryStat::ResetByUserSkill
                 }
             }
             case AREA_FIRE, AREA_POISON -> {

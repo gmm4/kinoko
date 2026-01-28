@@ -203,7 +203,12 @@ public abstract class SkillProcessor {
             // COPY SKILLS ---------------------------------------------------------------------------------------------
             case Warrior.IRON_BODY:
             case DawnWarrior.IRON_BODY:
-                user.setTemporaryStat(CharacterTemporaryStat.PDD, TemporaryStatOption.of(si.getValue(SkillStat.pdd, slv), skillId, si.getDuration(slv)));
+                int pddInc = si.getValue(SkillStat.pdd, slv);
+                int equipSkillId = SkillConstants.getEquipSkillStatChangeSkillId(skillId, CharacterTemporaryStat.PDD);
+                if(user.getSkillLevel(equipSkillId) > 0 && user.isEquipSkillActive(skillId, equipSkillId)) {
+                    pddInc += user.getSkillStatValue(equipSkillId, SkillStat.pdd);
+                }
+                user.setTemporaryStat(CharacterTemporaryStat.PDD, TemporaryStatOption.of(pddInc, skillId, si.getDuration(slv)));
                 return;
             case Warrior.RAGE:
             case DawnWarrior.RAGE:
