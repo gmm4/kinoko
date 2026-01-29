@@ -736,6 +736,7 @@ public final class SkillConstants {
         return switch(nSkillID){
             case 1001003 -> new int[]{1001103, 1001203}; // 战士 圣甲术
             case 1001004 -> new int[]{1001104, 1001204}; // 战士 强力攻击
+            case 1001005 -> new int[]{1001105, 1001205}; // 战士 群体攻击
             case 2001004 -> new int[]{2001104}; // 法师 魔法弹
             case 3001004 -> new int[]{3001104}; // 弓箭手 断魂箭
             case 3001005 -> new int[]{3001105}; // 弓箭手 二连箭

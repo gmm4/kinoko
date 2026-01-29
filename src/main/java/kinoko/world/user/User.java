@@ -453,6 +453,18 @@ public final class User extends Life {
 
     public void updatePassiveSkillData() {
         getPassiveSkillData().setFrom(getBasicStat(), getSecondaryStat(), getSkillManager());
+
+        // Equip Skill Special Handle
+        Map<Integer, Integer> equipSkillRecords = getSkillManager().getEquipSkillRecords();
+        for (var entry : equipSkillRecords.entrySet()){
+            int equipSkillId = entry.getKey();
+            int equipSkillLevel = entry.getValue();
+            SkillProvider.getSkillInfoById(equipSkillId).ifPresent((si -> {
+                if(si.isPsd() && isEquipSkillActive(equipSkillId)){
+                    getPassiveSkillData().addPassiveSkillDataByEquipSkill(si, equipSkillLevel);
+                }
+            }));
+        }
     }
 
     public void updateEquipSkill(){
@@ -909,6 +921,9 @@ public final class User extends Life {
         });
     }
 
+    public boolean isEquipSkillActive(int nEquipSkillID){
+        return isEquipSkillActive(0, nEquipSkillID);
+    }
     // 传入原始技能ID和幸运技能ID，判断幸运技能是否满足所有前置条件
     public boolean isEquipSkillActive(int nSkillID, int nEquipSkillID){
 
@@ -921,8 +936,8 @@ public final class User extends Life {
 
         switch (nEquipSkillID){
             // 特殊情况特殊判断的幸运技能
-            case 1001204:
-            case 1001205:
+            case 1001204: // 战士 强力攻击 终极猎人
+            case 1001205: // 战士 群体攻击 终极猎人
                 result &= (getSkillLevel(1100002) >= 30 || getSkillLevel(1200002) >= 30 || getSkillLevel(1300002) >= 30);
                 break;
         }

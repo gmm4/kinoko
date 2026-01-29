@@ -221,6 +221,14 @@ public final class PassiveSkillData {
         revisePassiveSkillData();
     }
 
+    // Equip Skill Special Handle
+    public void addPassiveSkillDataByEquipSkill(SkillInfo si, int slv){
+        if(slv <= 0) {
+            return;
+        }
+        this.mhpR += si.getValue(SkillStat.y, slv);
+    }
+
     private void addPassiveSkillData(SkillInfo si, int slv) {
         if (slv <= 0) {
             return;
