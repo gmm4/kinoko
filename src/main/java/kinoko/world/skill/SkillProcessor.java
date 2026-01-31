@@ -2,12 +2,17 @@ package kinoko.world.skill;
 
 import kinoko.packet.user.UserLocal;
 import kinoko.packet.user.UserRemote;
+import kinoko.packet.world.WvsContext;
 import kinoko.provider.SkillProvider;
 import kinoko.provider.skill.SkillInfo;
 import kinoko.provider.skill.SkillStat;
 import kinoko.util.Rect;
 import kinoko.util.Util;
+import kinoko.world.GameConstants;
 import kinoko.world.field.Field;
+import kinoko.world.field.drop.Drop;
+import kinoko.world.field.drop.DropEnterType;
+import kinoko.world.field.drop.DropOwnType;
 import kinoko.world.field.mob.BurnedInfo;
 import kinoko.world.field.mob.Mob;
 import kinoko.world.field.mob.MobStatOption;
@@ -16,6 +21,7 @@ import kinoko.world.field.summoned.Summoned;
 import kinoko.world.field.summoned.SummonedAssistType;
 import kinoko.world.field.summoned.SummonedMoveAbility;
 import kinoko.world.item.BodyPart;
+import kinoko.world.item.InventoryManager;
 import kinoko.world.item.Item;
 import kinoko.world.job.Job;
 import kinoko.world.job.cygnus.*;
@@ -29,6 +35,7 @@ import kinoko.world.job.resistance.WildHunter;
 import kinoko.world.user.User;
 import kinoko.world.user.effect.Effect;
 import kinoko.world.user.stat.CharacterTemporaryStat;
+import kinoko.world.user.stat.Stat;
 import kinoko.world.user.stat.TemporaryStatOption;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -152,6 +159,30 @@ public abstract class SkillProcessor {
         final Field field = user.getField();
         switch (skillId) {
             // BEGINNER SKILLS -----------------------------------------------------------------------------------------
+            case Beginner.EQUIP_SKILL_MESO_JUMP:
+                // final int money = 3000; // nAmount
+                final int money = si.getValue(SkillStat.moneyCon, slv); // nAmount
+                final InventoryManager im = user.getInventoryManager();
+                if (money <= 0 || !im.addMoney(-money)) {
+                    user.dispose();
+                    return;
+                }
+                final int baseX = user.getX();
+                final int baseY = user.getY() - GameConstants.DROP_HEIGHT;
+                final int dropCount = Util.getRandom(1,5);
+                int remaining = money;
+                for(int i = 0; i < dropCount; i++){
+                    final int amount = (i == dropCount -1) ? remaining : Util.getRandom(1, remaining - (dropCount - i -1));
+                    remaining -= amount;
+                    final int dropX = baseX + Util.getRandom(-30 - i*5, 30 + i*5);
+                    final int dropY = baseY + Util.getRandom(-5, 5);
+                    final Drop drop = Drop.money(DropOwnType.NOOWN, user, amount, user.getCharacterId());
+                    user.getField().getDropPool().addDrop(drop, DropEnterType.CREATE, dropX, dropY, 0);
+                }
+                // final Drop drop = Drop.money(DropOwnType.NOOWN, user, money, user.getCharacterId());
+                // user.getField().getDropPool().addDrop(drop, DropEnterType.CREATE, user.getX(), user.getY() - GameConstants.DROP_HEIGHT, 0);
+                user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(), true));
+                return;
             case Beginner.RECOVERY:
             case Noblesse.RECOVERY:
             case Aran.RECOVERY:

@@ -26,4 +26,7 @@ public final class Beginner extends SkillProcessor {
     public static final int PIGS_WEAKNESS = 9000;
     public static final int STUMPS_WEAKNESS = 9001;
     public static final int SLIMES_WEAKNESS = 9002;
+
+    // Equip Skill
+    public static final int EQUIP_SKILL_MESO_JUMP = 1221;
 }
