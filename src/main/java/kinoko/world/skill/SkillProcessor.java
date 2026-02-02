@@ -163,14 +163,14 @@ public abstract class SkillProcessor {
                 // final int money = 3000; // nAmount
                 final int money = si.getValue(SkillStat.moneyCon, slv); // nAmount
                 final InventoryManager im = user.getInventoryManager();
-                if (money <= 0 || !im.addMoney(-money)) {
+                if (money <= 10 || !im.addMoney(-money)) {
                     user.dispose();
                     return;
                 }
                 final int baseX = user.getX();
-                final int baseY = user.getY() - GameConstants.DROP_HEIGHT;
+                final int baseY = user.getY() - GameConstants.DROP_HEIGHT + 10;
                 final int dropCount = Util.getRandom(1,5);
-                int remaining = money;
+                int remaining = (int)(money * 0.7); // Tax
                 for(int i = 0; i < dropCount; i++){
                     final int amount = (i == dropCount -1) ? remaining : Util.getRandom(1, remaining - (dropCount - i -1));
                     remaining -= amount;
@@ -413,7 +413,9 @@ public abstract class SkillProcessor {
                 // noop
                 return;
             case Warrior.WEAPON_BOOSTER_HERO:
+            case Warrior.WEAPON_BOOSTER_HERO_AXE:
             case Warrior.WEAPON_BOOSTER_PALADIN:
+            case Warrior.WEAPON_BOOSTER_PALADIN_BLUNT:
             case Warrior.WEAPON_BOOSTER_DRK:
             case Magician.SPELL_BOOSTER_FP:
             case Magician.SPELL_BOOSTER_IL:

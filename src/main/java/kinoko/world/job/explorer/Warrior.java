@@ -37,6 +37,7 @@ public final class Warrior extends SkillProcessor {
     public static final int FINAL_ATTACK_HERO = 1100002;
     public static final int ENHANCED_BASICS_HERO = 1100009;
     public static final int WEAPON_BOOSTER_HERO = 1101004;
+    public static final int WEAPON_BOOSTER_HERO_AXE = 1101005;
     public static final int RAGE = 1101006;
     public static final int POWER_GUARD_HERO = 1101007;
     public static final int GROUND_SMASH_HERO = 1101008;
@@ -67,6 +68,7 @@ public final class Warrior extends SkillProcessor {
     public static final int FINAL_ATTACK_PALADIN = 1200002;
     public static final int ENHANCED_BASICS_PALADIN = 1200009;
     public static final int WEAPON_BOOSTER_PALADIN = 1201004;
+    public static final int WEAPON_BOOSTER_PALADIN_BLUNT = 1201005;
     public static final int THREATEN = 1201006;
     public static final int POWER_GUARD_PALADIN = 1201007;
     public static final int GROUND_SMASH_PALADIN = 1201008;
