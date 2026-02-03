@@ -2,6 +2,7 @@ package kinoko.world.skill;
 
 import kinoko.provider.skill.ElementAttribute;
 import kinoko.util.Rect;
+import kinoko.world.item.WeaponType;
 import kinoko.world.job.Job;
 import kinoko.world.job.JobConstants;
 import kinoko.world.job.cygnus.*;
@@ -15,6 +16,7 @@ import kinoko.world.job.resistance.WildHunter;
 import kinoko.world.user.stat.CharacterTemporaryStat;
 
 import java.util.List;
+import java.util.Set;
 
 public final class SkillConstants {
     public static final List<Integer> SECONDARY_STAT_SKILLS = List.of(
@@ -29,6 +31,31 @@ public final class SkillConstants {
             Aran.BLESSING_OF_THE_FAIRY,
             Evan.BLESSING_OF_THE_FAIRY
     );
+    public static final Set<Integer> EQUIP_SKILL_SECONDARY_STAT_SKILLS = Set.of(
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM
+    );
+    public static boolean isActiveforEquipSkillSecondaryStatSkills(int skillId, WeaponType weaponType, int job){
+        switch(skillId){
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD:
+                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE:
+                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_AXE || weaponType == WeaponType.TH_AXE);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD:
+                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT:
+                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_MACE || weaponType == WeaponType.TH_MACE);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR:
+                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.SPEAR);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM:
+                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.POLEARM);
+        }
+        return false;
+    }
     public static final List<Integer> WILD_HUNTER_JAGUARS = List.of(
             1932015, 1932030, 1932031, 1932032, 1932033, 1932036
     );

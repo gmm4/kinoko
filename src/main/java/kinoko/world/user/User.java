@@ -33,8 +33,11 @@ import kinoko.world.field.TownPortal;
 import kinoko.world.field.life.Life;
 import kinoko.world.field.summoned.Summoned;
 import kinoko.world.field.summoned.SummonedLeaveType;
+import kinoko.world.item.BodyPart;
 import kinoko.world.item.InventoryManager;
 import kinoko.world.item.Item;
+import kinoko.world.item.WeaponType;
+import kinoko.world.job.explorer.Warrior;
 import kinoko.world.quest.QuestManager;
 import kinoko.world.skill.PassiveSkillData;
 import kinoko.world.skill.SkillConstants;
@@ -515,6 +518,39 @@ public final class User extends Life {
 
         // SecondaryStat::SetFrom
         getSecondaryStat().setFrom(getBasicStat(), getForcedStat(), getSecondaryStat(), getSkillManager(), realEquip);
+        // SecondaryStat for Equip Skill
+        final Item weapon = realEquip.get(BodyPart.WEAPON.getValue());
+        final WeaponType wt = WeaponType.getByItemId(weapon != null ? weapon.getItemId() : 0);
+        final int jobId = getBasicStat().getJob();
+        for (var entry : getSkillManager().getEquipSkillRecords().entrySet()){
+            int skillId = entry.getKey();
+            if(!SkillConstants.EQUIP_SKILL_SECONDARY_STAT_SKILLS.contains(skillId)){
+                continue;
+            }
+            int slv = entry.getValue();
+            if (slv <= 0) {
+                continue;
+            }
+            if(!isEquipSkillActive(skillId)){
+                continue; // 满足前置条件
+            }
+            switch (skillId) {
+                case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD, Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE,
+                     Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD, Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT,
+                     Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR,
+                     Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM-> {
+                    // 满足佩戴条件
+                    if(SkillConstants.isActiveforEquipSkillSecondaryStatSkills(skillId, wt, jobId)) {
+                        final Optional<SkillInfo> equipSkillSkillInfoResult = SkillProvider.getSkillInfoById(skillId);
+                        if (equipSkillSkillInfoResult.isEmpty()) {
+                            continue;
+                        }
+                        final SkillInfo si = equipSkillSkillInfoResult.get();
+                        getSecondaryStat().addAcc(si.getValue(SkillStat.x, slv));
+                    }
+                }
+            }
+        }
 
         // CWvsContext::ValidateAdditionalItemEffect - ignore
 

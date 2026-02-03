@@ -41,6 +41,8 @@ public final class Warrior extends SkillProcessor {
     public static final int RAGE = 1101006;
     public static final int POWER_GUARD_HERO = 1101007;
     public static final int GROUND_SMASH_HERO = 1101008;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD = 1100100;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_HERO_AXE = 1100200;
     public static final int EQUIP_SKILL_FINAL_ATTACK_HERO_SWORD = 1100102;
     public static final int EQUIP_SKILL_FINAL_ATTACK_HERO_AXE = 1100202;
     // CRUSADER
@@ -72,6 +74,8 @@ public final class Warrior extends SkillProcessor {
     public static final int THREATEN = 1201006;
     public static final int POWER_GUARD_PALADIN = 1201007;
     public static final int GROUND_SMASH_PALADIN = 1201008;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD = 1200100;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT = 1200200;
     public static final int EQUIP_SKILL_FINAL_ATTACK_PALADIN_SWORD = 1200102;
     public static final int EQUIP_SKILL_FINAL_ATTACK_PALADIN_BLUNT = 1200202;
     // WHITE_KNIGHT
@@ -103,6 +107,8 @@ public final class Warrior extends SkillProcessor {
     public static final int IRON_WILL = 1301006;
     public static final int HYPER_BODY = 1301007;
     public static final int GROUND_SMASH_DRK = 1301008;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR = 1300100;
+    public static final int EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM = 1300200;
     public static final int EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_SPEAR = 1300102; // 终极枪 - 终极幻影
     public static final int EQUIP_SKILL_FINAL_ATTACK_DARK_KNIGHT_POLEARM = 1300202; // 终极矛 - 终极幻影
     // DRAGON_KNIGHT

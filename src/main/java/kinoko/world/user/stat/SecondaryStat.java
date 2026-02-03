@@ -119,6 +119,8 @@ public final class SecondaryStat {
         return jump;
     }
 
+    public void addAcc(int acc) { this.acc += acc; }
+
 
     // TEMPORARY STAT METHODS ------------------------------------------------------------------------------------------
 
