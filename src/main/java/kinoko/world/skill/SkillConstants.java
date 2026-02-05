@@ -31,31 +31,7 @@ public final class SkillConstants {
             Aran.BLESSING_OF_THE_FAIRY,
             Evan.BLESSING_OF_THE_FAIRY
     );
-    public static final Set<Integer> EQUIP_SKILL_SECONDARY_STAT_SKILLS = Set.of(
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD,
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE,
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD,
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT,
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR,
-            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM
-    );
-    public static boolean isActiveforEquipSkillSecondaryStatSkills(int skillId, WeaponType weaponType, int job){
-        switch(skillId){
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD:
-                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE:
-                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_AXE || weaponType == WeaponType.TH_AXE);
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD:
-                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT:
-                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_MACE || weaponType == WeaponType.TH_MACE);
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR:
-                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.SPEAR);
-            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM:
-                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.POLEARM);
-        }
-        return false;
-    }
+
     public static final List<Integer> WILD_HUNTER_JAGUARS = List.of(
             1932015, 1932030, 1932031, 1932032, 1932033, 1932036
     );
@@ -737,6 +713,33 @@ public final class SkillConstants {
         }
     }
 
+    public static final Set<Integer> EQUIP_SKILL_SECONDARY_STAT_SKILLS = Set.of(
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR,
+            Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM
+    );
+
+    public static boolean isActiveforEquipSkillSecondaryStatSkills(int skillId, WeaponType weaponType, int job){
+        switch(skillId){
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_SWORD:
+                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_HERO_AXE:
+                return (JobConstants.isHeroJob(job)) && (weaponType == WeaponType.OH_AXE || weaponType == WeaponType.TH_AXE);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_SWORD:
+                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_SWORD || weaponType == WeaponType.TH_SWORD);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_PALADIN_BLUNT:
+                return (JobConstants.isPaladinJob(job)) && (weaponType == WeaponType.OH_MACE || weaponType == WeaponType.TH_MACE);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_SPEAR:
+                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.SPEAR);
+            case Warrior.EQUIP_SKILL_WEAPON_MASTER_DARK_KNIGHT_POLEARM:
+                return (JobConstants.isDarkKnightJob(job)) && (weaponType == WeaponType.POLEARM);
+        }
+        return false;
+    }
+
     public static boolean isSkillNeedMasterLevel(int skillId) {
         if (isIgnoreMasterLevelForCommon(skillId)) {
             return false;
@@ -764,6 +767,9 @@ public final class SkillConstants {
             case 1001003 -> new int[]{1001103, 1001203}; // 战士 圣甲术
             case 1001004 -> new int[]{1001104, 1001204}; // 战士 强力攻击
             case 1001005 -> new int[]{1001105, 1001205}; // 战士 群体攻击
+            case 1101004 -> new int[]{1101104}; // 剑客 快速剑
+            case 1101005 -> new int[]{1101105}; // 剑客 快速斧
+            case 1321003 -> new int[]{1321103}; // 黑骑士 突进
             case 2001004 -> new int[]{2001104}; // 法师 魔法弹
             case 3001004 -> new int[]{3001104}; // 弓箭手 断魂箭
             case 3001005 -> new int[]{3001105}; // 弓箭手 二连箭
@@ -782,6 +788,10 @@ public final class SkillConstants {
         switch (nBuffSkillId){
             case 1001003: // 战士 圣甲术
                 return new AntiDispelEquipSkill[]{new AntiDispelEquipSkill(1001103, 3)};
+            case 1101004: // 剑客 快速剑
+                return new AntiDispelEquipSkill[]{new AntiDispelEquipSkill(1101104, 3)};
+            case 1101005: // 剑客 快速斧
+                return new AntiDispelEquipSkill[]{new AntiDispelEquipSkill(1101105, 3)};
             case 1121000: // 英雄 冒险岛勇士
             case 1221000: // 圣骑士 冒险岛勇士
             case 1321000: // 黑骑士 冒险岛勇士

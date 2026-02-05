@@ -225,20 +225,29 @@ public final class SkillHandler {
     public static void handleUserEffectLocal(User user, InPacket inPacket) {
         final int skillId = inPacket.decodeInt();
         final int slv = inPacket.decodeByte();
-        final boolean sendLocal = inPacket.decodeBoolean();
+        final int oriSendLocal = inPacket.decodeByte();
+        if(oriSendLocal != -1){
+            //final boolean sendLocal = inPacket.decodeBoolean();
+            final boolean sendLocal = oriSendLocal != 0;
+            final Effect effect = Effect.skillUse(skillId, slv, user.getLevel());
+            if (sendLocal) {
+                user.write(UserLocal.effect(effect));
 
-        final Effect effect = Effect.skillUse(skillId, slv, user.getLevel());
-        if (sendLocal) {
-            user.write(UserLocal.effect(effect));
-
-            // Not a real skill ID, but client sends this when trying to cancel Mech: Siege Mode (35111004), Mech: Missile Tank (35121005), and Mech: Siege Mode 2 (35121013)
-            if (skillId == 35110004 || skillId == 35120005 || skillId == 35120013) {
-                if (user.getSecondaryStat().hasOption(CharacterTemporaryStat.Mechanic)) {
-                    Mechanic.handleMech(user, skillId == 35120013 ? Mechanic.MECH_MISSILE_TANK : Mechanic.MECH_PROTOTYPE);
+                // Not a real skill ID, but client sends this when trying to cancel Mech: Siege Mode (35111004), Mech: Missile Tank (35121005), and Mech: Siege Mode 2 (35121013)
+                if (skillId == 35110004 || skillId == 35120005 || skillId == 35120013) {
+                    if (user.getSecondaryStat().hasOption(CharacterTemporaryStat.Mechanic)) {
+                        Mechanic.handleMech(user, skillId == 35120013 ? Mechanic.MECH_MISSILE_TANK : Mechanic.MECH_PROTOTYPE);
+                    }
                 }
             }
+            user.getField().broadcastPacket(UserRemote.effect(user, effect), user);
+        }else{
+            // Equip Skill Special Handle
+            final Effect effect = Effect.skillUse(skillId, slv, user.getLevel());
+            user.write(UserLocal.effect(effect));
+            user.getField().broadcastPacket(UserRemote.effect(user, effect), user);
         }
-        user.getField().broadcastPacket(UserRemote.effect(user, effect), user);
+
     }
 
     @Handler(InHeader.UserCalcDamageStatSetRequest)
