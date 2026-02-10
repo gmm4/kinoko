@@ -10,7 +10,9 @@ public enum TrunkRequestType {
     PutItem(5),
     SortItem(6),
     Money(7),
-    CloseDialog(8);
+    CloseDialog(8),
+    GetAllItem(9),
+    PutAllItem(10);
 
     private final int value;
 

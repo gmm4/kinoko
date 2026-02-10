@@ -481,7 +481,7 @@ public final class CashItemHandler extends ItemHandler {
                 if (npcTemplate.isTrunk()) {
                     final TrunkDialog trunkDialog = TrunkDialog.from(npcTemplate);
                     user.setDialog(trunkDialog);
-                    user.write(TrunkPacket.openTrunkDlg(npcId, user.getAccount().getTrunk()));
+                    user.write(TrunkPacket.openTrunkDlg(npcId, user.getAccount().getTrunk(), 0));
                 } else {
                     final ShopDialog shopDialog = ShopDialog.from(npcTemplate);
                     user.setDialog(shopDialog);

@@ -27,6 +27,12 @@ public final class TrunkPacket {
         return outPacket;
     }
 
+    public static OutPacket SortItemWithoutResetingBSendRequest(Trunk trunk) {
+        final OutPacket outPacket = TrunkPacket.of(TrunkResultType.SortItemWithoutResetingBSendRequest);
+        trunk.encode(outPacket);
+        return outPacket;
+    }
+
     public static OutPacket moneySuccess(Trunk trunk) {
         final OutPacket outPacket = TrunkPacket.of(TrunkResultType.MoneySuccess);
         trunk.encodeItems(DBChar.MONEY, outPacket);
@@ -36,6 +42,14 @@ public final class TrunkPacket {
     public static OutPacket openTrunkDlg(int templateId, Trunk trunk) {
         final OutPacket outPacket = TrunkPacket.of(TrunkResultType.OpenTrunkDlg);
         outPacket.encodeInt(templateId); // dwNpcTemplateID
+        trunk.encode(outPacket);
+        return outPacket;
+    }
+
+    public static OutPacket openTrunkDlg(int templateId, Trunk trunk, int objectId) {
+        final OutPacket outPacket = TrunkPacket.of(TrunkResultType.OpenTrunkDlg);
+        outPacket.encodeInt(templateId); // dwNpcTemplateID
+        outPacket.encodeInt(objectId); // NPC Pool Id for client to Toggle TrunkView and send packet
         trunk.encode(outPacket);
         return outPacket;
     }

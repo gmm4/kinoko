@@ -13,9 +13,7 @@ import kinoko.world.user.stat.Stat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.Comparator;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public final class TrunkDialog implements Dialog {
     private static final Logger log = LogManager.getLogger(TrunkDialog.class);
@@ -195,6 +193,112 @@ public final class TrunkDialog implements Dialog {
             }
             case CloseDialog -> {
                 user.setDialog(null);
+            }
+            case GetAllItem -> {
+                final InventoryManager im = user.getInventoryManager();
+                List<Item> snapshotList = new ArrayList<>(trunk.getItems());
+                boolean trunkChanged = false;
+                TrunkResultType errorType = null;
+                for (Item item : snapshotList){
+                    if(im.getMoney()<getTrunkGet()){
+                        errorType = TrunkResultType.GetNoMoney;
+                        break;
+                    }
+                    if(!im.canAddItem(item)){
+                        errorType = TrunkResultType.GetUnknown;
+                        break;
+                    }
+                    if(!trunk.getItems().remove(item)){
+                        continue;
+                    }
+                    if(!im.addMoney(-getTrunkGet())){
+                        trunk.addItem(item);
+                        errorType = TrunkResultType.GetNoMoney;
+                        break;
+                    }
+                    final Optional<List<InventoryOperation>> addItemResult = im.addItem(item);
+                    if(addItemResult.isEmpty()){
+                        im.addMoney(getTrunkGet());
+                        trunk.addItem(item);
+                        errorType = TrunkResultType.GetUnknown;
+                        break;
+                    }
+                    user.write(WvsContext.inventoryOperation(addItemResult.get(), false));
+                    //user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(),true));
+                    trunkChanged = true;
+                }
+                if(trunkChanged){
+                    user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(), true));
+                    if(errorType == null){
+                        user.write(TrunkPacket.sortItem(trunk));
+                    }else{
+                        user.write(TrunkPacket.SortItemWithoutResetingBSendRequest(trunk));
+                    }
+                }
+                if(errorType != null){
+                    user.write(TrunkPacket.of(errorType));
+                }
+            }
+            case PutAllItem -> {
+                final int inventoryId = inPacket.decodeShort();
+                final InventoryType inventoryType = InventoryType.getByValue(inventoryId);
+
+                if(inventoryType == null || inventoryType == InventoryType.EQUIPPED){
+                    user.write(TrunkPacket.of(TrunkResultType.PutUnknown));
+                    return;
+                }
+                final InventoryManager im = user.getInventoryManager();
+                List<Map.Entry<Integer, Item>> snapshotList = new ArrayList<>(im.getInventoryByType(inventoryType).getItems().entrySet());
+                boolean trunkChanged = false;
+                TrunkResultType errorType = null;
+                for (Map.Entry<Integer, Item> entry : snapshotList){
+                    int position = entry.getKey();
+                    Item item = entry.getValue();
+                    if(im.getMoney() < getTrunkPut()){
+                        errorType = TrunkResultType.PutNoMoney;
+                        break;
+                    }
+                    if(item == null || item.getQuantity() <= 0){
+                        continue;
+                    }
+                    Optional<ItemInfo> itemInfoResult = ItemProvider.getItemInfo(item.getItemId());
+                    if(itemInfoResult.isEmpty()){
+                        continue;
+                    }
+                    ItemInfo itemInfo = itemInfoResult.get();
+                    if(itemInfo.isTradeBlock(item)){
+                        continue;
+                    }
+                    if(!trunk.canAddItem(item, item.getQuantity())){
+                        errorType = TrunkResultType.PutNoSpace;
+                        break;
+                    }
+                    if(!im.addMoney(-getTrunkPut())){
+                        errorType = TrunkResultType.PutNoMoney;
+                        break;
+                    }
+                    Optional<InventoryOperation> removeItemResult = im.removeItem(position, item);
+                    if(removeItemResult.isEmpty()){
+                        im.addMoney(getTrunkPut());
+                        errorType = TrunkResultType.PutUnknown;
+                        break;
+                    }
+                    item.setPossibleTrading(false);
+                    trunk.addItem(item);
+                    user.write(WvsContext.inventoryOperation(removeItemResult.get(),false));
+                    trunkChanged = true;
+                }
+                if(trunkChanged){
+                    user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(),true));
+                    if(errorType == null){
+                        user.write(TrunkPacket.sortItem(trunk));
+                    }else{
+                        user.write(TrunkPacket.SortItemWithoutResetingBSendRequest(trunk));
+                    }
+                }
+                if(errorType != null){
+                    user.write(TrunkPacket.of(errorType));
+                }
             }
         }
     }

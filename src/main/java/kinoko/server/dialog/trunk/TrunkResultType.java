@@ -17,7 +17,8 @@ public enum TrunkResultType {
     TrunkCheckSSN2(21),
     OpenTrunkDlg(22),
     TradeBlocked(23),
-    ServerMsg(24);
+    ServerMsg(24),
+    SortItemWithoutResetingBSendRequest(25);
 
     private final int value;
 

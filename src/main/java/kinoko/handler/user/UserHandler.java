@@ -195,7 +195,7 @@ public final class UserHandler {
         if (npc.isTrunk()) {
             final TrunkDialog trunkDialog = TrunkDialog.from(npc.getTemplate());
             user.setDialog(trunkDialog);
-            user.write(TrunkPacket.openTrunkDlg(npc.getTemplateId(), user.getAccount().getTrunk()));
+            user.write(TrunkPacket.openTrunkDlg(npc.getTemplateId(), user.getAccount().getTrunk(), objectId));
         } else if (ShopProvider.isShop(npc.getTemplateId())) {
             final ShopDialog shopDialog = ShopDialog.from(npc.getTemplate());
             user.setDialog(shopDialog);
