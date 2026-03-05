@@ -528,6 +528,12 @@ public enum OutHeader {
     ITCNormalItemResult(412),
 
     LogoutGift(432),
+
+    // Custom Packet, starts from 0x200
+    //DamageRank(512),
+
+
+    // END
     NO(433);
 
 

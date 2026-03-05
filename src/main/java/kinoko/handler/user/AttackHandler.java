@@ -551,7 +551,8 @@ public final class AttackHandler {
         }
 
         // Broadcast packet
-        user.getField().broadcastPacket(UserRemote.attack(user, attack), user);
+        // user.getField().broadcastPacket(UserRemote.attack(user, attack), user);
+        user.getField().broadcastPacket(UserRemote.attack(user, attack));
 
         // Process hp/mp gains
         if (hpGain > 0) {
