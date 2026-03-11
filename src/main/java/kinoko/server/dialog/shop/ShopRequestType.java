@@ -5,7 +5,9 @@ public enum ShopRequestType {
     Buy(0),
     Sell(1),
     Recharge(2),
-    Close(3);
+    Close(3),
+    BatchSell(4),
+    BatchRecharge(5);
 
     private final int value;
 

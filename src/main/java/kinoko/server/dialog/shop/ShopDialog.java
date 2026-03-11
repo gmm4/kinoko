@@ -1,12 +1,15 @@
 package kinoko.server.dialog.shop;
 
 import kinoko.packet.field.FieldPacket;
+import kinoko.packet.stage.CashShopPacket;
 import kinoko.packet.world.WvsContext;
 import kinoko.provider.ItemProvider;
 import kinoko.provider.ShopProvider;
 import kinoko.provider.item.ItemInfo;
 import kinoko.provider.npc.NpcTemplate;
 import kinoko.provider.skill.SkillStat;
+import kinoko.server.cashshop.CashItemFailReason;
+import kinoko.server.cashshop.CashItemResultType;
 import kinoko.server.dialog.Dialog;
 import kinoko.server.packet.InPacket;
 import kinoko.server.packet.OutPacket;
@@ -182,6 +185,152 @@ public final class ShopDialog implements Dialog {
                 user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(), false));
                 user.write(WvsContext.inventoryOperation(InventoryOperation.itemNumber(InventoryType.CONSUME, position, item.getQuantity()), true));
                 user.write(FieldPacket.shopResult(ShopResultType.RechargeSuccess));
+            }
+            case BatchSell -> {
+                final int count = inPacket.decodeInt(); // nCount
+                final InventoryManager im = user.getInventoryManager();
+                // 记录状态
+                boolean anySuccess = false;
+                boolean hasError = false;
+                String lastErrorMessage = null;
+                // 开始循环处理
+                for (int i = 0; i < count; i++){
+                    final InventoryType inventoryType = InventoryType.getByValue(inPacket.decodeShort());
+                    final int position = inPacket.decodeInt(); // nPOS
+                    // 背包类型校验
+                    if (inventoryType == null || inventoryType == InventoryType.EQUIPPED) {
+                        hasError = true;
+                        lastErrorMessage = "错误的背包类型";
+                        continue;
+                    }
+                    final Inventory inventory = im.getInventoryByType(inventoryType);
+                    final Item sellItem = inventory.getItem(position);
+                    // 背包道具位置校验
+                    if(sellItem == null){
+                        hasError = true;
+                        lastErrorMessage = "错误的背包位置";
+                        continue;
+                    }
+                    final int itemId = sellItem.getItemId();
+                    final boolean rechargeable = ItemConstants.isRechargeableItem(itemId);
+                    // 道具存在校验
+                    final Optional<ItemInfo> itemInfoResult = ItemProvider.getItemInfo(itemId);
+                    if (itemInfoResult.isEmpty()) {
+                        hasError = true;
+                        lastErrorMessage = "不存在的道具";
+                        continue;
+                    }
+                    final ItemInfo ii = itemInfoResult.get();
+                    final int price = ii.getPrice();
+                    final int sellCount = rechargeable ? 1 : sellItem.getQuantity();
+                    final long itemTotalPrice = ((long) price) * sellCount + (long) (rechargeable ? Math.ceil(sellItem.getQuantity() * ii.getUnitPrice()) : 0);
+                    // 金币上限校验
+                    if (!im.canAddMoney((int) itemTotalPrice)) {
+                        hasError = true;
+                        lastErrorMessage = "金币数量达到上限";
+                        continue;
+                    }
+                    // 执行移除道具
+                    final Optional<InventoryOperation> removeItemResult = im.removeItem(position, sellItem, sellItem.getQuantity());
+                    if (removeItemResult.isEmpty()) {
+                        hasError = true;
+                        lastErrorMessage = "因为未知错误，道具出售失败";
+                        continue;
+                    }
+                    // 增加金币
+                    if (!im.addMoney((int) itemTotalPrice)) {
+                        hasError = true;
+                        lastErrorMessage = "金币数量达到上限";
+                        continue;
+                    }
+                    user.write(WvsContext.inventoryOperation(removeItemResult.get(), false));
+                    anySuccess = true;
+                }
+                if (anySuccess) {
+                    user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(), true));
+                }
+                if (hasError) {
+                    user.write(FieldPacket.shopResult(ShopResultType.ServerMsg, lastErrorMessage));
+                } else if (anySuccess) {
+                    user.write(FieldPacket.shopResult(ShopResultType.SellSuccess));
+                }
+            }
+            case BatchRecharge -> {
+                final int count = inPacket.decodeInt(); // nCount
+                final InventoryManager im = user.getInventoryManager();
+                final Inventory consumeInventory = im.getConsumeInventory();
+                // 状态记录
+                boolean anySuccess = false;
+                boolean hasError = false;
+                String lastErrorMessage = null;
+                // 开始循环处理
+                for (int i = 0; i < count; i++) {
+                    final int position = inPacket.decodeInt(); // nPOS
+                    final Item item = consumeInventory.getItem(position);
+                    // 道具位置校验
+                    if (item == null) {
+                        hasError = true;
+                        lastErrorMessage = "错误的背包位置";
+                        continue;
+                    }
+                    // 可充值属性校验
+                    if (!ItemConstants.isRechargeableItem(item.getItemId())) {
+                        hasError = true;
+                        lastErrorMessage = "该道具无法充值";
+                        continue;
+                    }
+                    // 校验商店是否提供该道具充值
+                    final Optional<ShopItem> shopItemResult = items.stream()
+                            .filter((shopitem) -> shopitem.getItemId() == item.getItemId() && shopitem.getUnitPrice() > 0)
+                            .findFirst();
+                    if (shopItemResult.isEmpty()) {
+                        hasError = true;
+                        lastErrorMessage = "未知错误，该道具无法充值";
+                        continue;
+                    }
+                    final ShopItem shopitem = shopItemResult.get();
+                    // 获取道具信息
+                    final Optional<ItemInfo> itemInfoResult = ItemProvider.getItemInfo(item.getItemId());
+                    if (itemInfoResult.isEmpty()) {
+                        hasError = true;
+                        lastErrorMessage = "不存在的道具信息";
+                        continue;
+                    }
+                    // 获取道具充值上限
+                    final int slotMax = itemInfoResult.get().getSlotMax() + getIncSlotMax(user, item.getItemId());
+                    if (item.getQuantity() >= slotMax) {
+                        hasError = true;
+                        lastErrorMessage = "道具已满，无需充值";
+                        continue;
+                    }
+                    // 计算差价并校验金币
+                    final int delta = slotMax - item.getQuantity();
+                    final long totalPrice = (long) Math.ceil(delta * shopitem.getUnitPrice());
+                    // 金币不足校验
+                    if (totalPrice > GameConstants.MONEY_MAX || !im.canAddMoney((int) -totalPrice)) {
+                        hasError = true;
+                        lastErrorMessage = "金币不足，无法完成全部充值";
+                        continue;
+                    }
+                    // 执行扣除金币
+                    if (!im.addMoney((int) -totalPrice)) {
+                        hasError = true;
+                        lastErrorMessage = "金币不足，充值失败";
+                        continue;
+                    }
+                    // 充值道具
+                    item.setQuantity((short) slotMax);
+                    user.write(WvsContext.inventoryOperation(InventoryOperation.itemNumber(InventoryType.CONSUME, position, item.getQuantity()), false));
+                    anySuccess = true;
+                }
+                if (anySuccess) {
+                    user.write(WvsContext.statChanged(Stat.MONEY, im.getMoney(), false));
+                }
+                if (hasError) {
+                    user.write(FieldPacket.shopResult(ShopResultType.ServerMsg, lastErrorMessage));
+                } else if (anySuccess) {
+                    user.write(FieldPacket.shopResult(ShopResultType.RechargeSuccess));
+                }
             }
             case Close -> {
                 user.setDialog(null);
