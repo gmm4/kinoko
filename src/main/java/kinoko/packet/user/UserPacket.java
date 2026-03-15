@@ -5,6 +5,7 @@ import kinoko.server.dialog.miniroom.MiniRoom;
 import kinoko.server.header.OutHeader;
 import kinoko.server.packet.OutPacket;
 import kinoko.world.field.summoned.Summoned;
+import kinoko.world.item.Item;
 import kinoko.world.job.explorer.Warrior;
 import kinoko.world.job.legend.Evan;
 import kinoko.world.user.GuildInfo;
@@ -116,12 +117,16 @@ public final class UserPacket {
 
     // CUserPool::OnUserCommonPacket -----------------------------------------------------------------------------------
 
-    public static OutPacket userChat(User user, ChatType type, String text, boolean onlyBalloon) {
+    public static OutPacket userChat(User user, ChatType type, String text, boolean onlyBalloon, Item item) {
         final OutPacket outPacket = OutPacket.of(OutHeader.UserChat);
         outPacket.encodeInt(user.getCharacterId());
         outPacket.encodeByte(type.getValue()); // lType
         outPacket.encodeString(text); // sChat
         outPacket.encodeByte(onlyBalloon); // bOnlyBalloon
+        outPacket.encodeByte(item != null);
+        if (item != null) {
+            item.encode(outPacket); // GW_ItemSlotBase::Decode
+        }
         return outPacket;
     }
 

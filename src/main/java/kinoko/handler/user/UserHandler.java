@@ -128,7 +128,22 @@ public final class UserHandler {
             CommandProcessor.tryProcessCommand(user, text);
             return;
         }
-        user.getField().broadcastPacket(UserPacket.userChat(user, ChatType.NORMAL, text, onlyBalloon));
+        final Item targetItem;
+        final InventoryManager im = user.getInventoryManager();
+        if(inPacket.decodeBoolean()){
+            final int targetType = inPacket.decodeInt(); // nTargetTI
+            final int targetPosition = inPacket.decodeInt(); // nTargetPOS
+            final InventoryType inventoryType = InventoryType.getByPosition(InventoryType.getByValue(targetType), targetPosition);
+            if (inventoryType == null) {
+                log.error("Received unknown target inventory type {} for item speaker", targetType);
+                user.dispose();
+                return;
+            }
+            targetItem = im.getInventoryByType(inventoryType).getItem(targetPosition);
+        } else {
+            targetItem = null;
+        }
+        user.getField().broadcastPacket(UserPacket.userChat(user, ChatType.NORMAL, text, onlyBalloon, targetItem));
     }
 
     @Handler(InHeader.UserADBoardClose)
