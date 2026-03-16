@@ -16,6 +16,7 @@ import kinoko.world.field.drop.Drop;
 import kinoko.world.field.drop.DropEnterType;
 import kinoko.world.field.drop.DropLeaveType;
 import kinoko.world.field.reactor.Reactor;
+import kinoko.world.item.Item;
 import kinoko.world.user.User;
 import kinoko.world.user.data.FuncKeyMapped;
 
@@ -47,11 +48,15 @@ public final class FieldPacket {
         return outPacket;
     }
 
-    public static OutPacket groupMessage(ChatGroupType groupType, String characterName, String message) {
+    public static OutPacket groupMessage(ChatGroupType groupType, String characterName, String message, Item item) {
         final OutPacket outPacket = OutPacket.of(OutHeader.GroupMessage);
         outPacket.encodeByte(groupType.getValue());
         outPacket.encodeString(characterName); // sFrom
         outPacket.encodeString(message); // sMsg
+        outPacket.encodeByte(item != null);
+        if (item != null) {
+            item.encode(outPacket); // GW_ItemSlotBase::Decode
+        }
         return outPacket;
     }
 

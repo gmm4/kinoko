@@ -1242,12 +1242,28 @@ public final class UserHandler {
         for (int i = 0; i < count; i++) {
             targetIds.add(inPacket.decodeInt());
         }
+        targetIds.add(user.getCharacterId()); // 测试改动
         final String text = inPacket.decodeString(); // sText
         if (text.startsWith(ServerConfig.COMMAND_PREFIX) && text.length() > 1) {
             CommandProcessor.tryProcessCommand(user, text);
             return;
         }
-        user.getConnectedServer().submitUserPacketBroadcast(targetIds, FieldPacket.groupMessage(groupType, user.getCharacterName(), text));
+        final Item targetItem;
+        final InventoryManager im = user.getInventoryManager();
+        if(inPacket.decodeBoolean()){
+            final int targetType = inPacket.decodeInt(); // nTargetTI
+            final int targetPosition = inPacket.decodeInt(); // nTargetPOS
+            final InventoryType inventoryType = InventoryType.getByPosition(InventoryType.getByValue(targetType), targetPosition);
+            if (inventoryType == null) {
+                log.error("Received unknown target inventory type {} for item speaker", targetType);
+                user.dispose();
+                return;
+            }
+            targetItem = im.getInventoryByType(inventoryType).getItem(targetPosition);
+        } else {
+            targetItem = null;
+        }
+        user.getConnectedServer().submitUserPacketBroadcast(targetIds, FieldPacket.groupMessage(groupType, user.getCharacterName(), text, targetItem));
     }
 
     @Handler(InHeader.Whisper)
