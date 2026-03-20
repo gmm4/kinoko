@@ -140,6 +140,9 @@ public final class EquipData {
         outPacket.encodeInt(getEquipSkillLevel()); // equipSkill.nSLV
         outPacket.encodeFT(getEquipSkillExpire()); // equipSkill.tDateExpire
 
+        // 测试代码
+        outPacket.encodeInt(0x000F0F00); // equipSkill.cColorInfo
+
     }
 
     public short getIncStr() {
