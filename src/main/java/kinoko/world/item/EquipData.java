@@ -141,7 +141,11 @@ public final class EquipData {
         outPacket.encodeFT(getEquipSkillExpire()); // equipSkill.tDateExpire
 
         // 测试代码
-        outPacket.encodeInt(0x000F0F00); // equipSkill.cColorInfo
+        if(getEquipSkillId()>0){
+            outPacket.encodeInt(0x000F0F00); // equipSkill.cColorInfo
+        }else{
+            outPacket.encodeInt(0); // equipSkill.cColorInfo
+        }
 
     }
 
