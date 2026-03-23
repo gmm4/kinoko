@@ -142,7 +142,7 @@ public final class EquipData {
 
         // 测试代码
         if(getEquipSkillId()>0){
-            outPacket.encodeInt(0x000F0F00); // equipSkill.cColorInfo
+            outPacket.encodeInt(0x00603800); // equipSkill.cColorInfo
         }else{
             outPacket.encodeInt(0); // equipSkill.cColorInfo
         }

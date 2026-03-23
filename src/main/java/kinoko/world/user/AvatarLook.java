@@ -58,9 +58,9 @@ public final class AvatarLook implements Encodable {
         }
 
         // 测试代码
+        outPacket.encodeInt(1072001); // 道具ID
+        outPacket.encodeInt(0x00603800); // 道具HSL
         outPacket.encodeInt(0); // 结尾
-        //outPacket.encodeInt(1702180); // 道具ID
-        //outPacket.encodeInt(0x001F1F00); // 道具HSL
     }
 
     public static AvatarLook decode(InPacket inPacket) {
