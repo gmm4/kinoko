@@ -80,7 +80,11 @@ public enum CashItemType {
     SKILLRESET(75),
     DRAGONBALL(76),
     RECOVERUPGRADECOUNT(77),
-    QUESTDELIVERY(78);
+    QUESTDELIVERY(78),
+
+    // Custom New Type
+    COLORPRISM(578);
+
 
     private final int value;
 
@@ -327,6 +331,11 @@ public enum CashItemType {
             }
             case 566 -> {
                 return QUESTDELIVERY;
+            }
+
+            // Custom Type
+            case 578 -> {
+                return COLORPRISM;
             }
         }
         return NONE;

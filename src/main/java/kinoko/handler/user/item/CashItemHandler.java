@@ -633,6 +633,29 @@ public final class CashItemHandler extends ItemHandler {
                     user.write(UserLocal.effect(Effect.lotteryUse(itemId, rewardEntry.getEffect())));
                 }
             }
+            case COLORPRISM -> {
+                // 测试代码
+                final int equipItemPosition = inPacket.decodeInt(); // nEPOS
+                final int newColor = inPacket.decodeInt(); // cColorInfo
+                // Resolve equip item
+                final InventoryType equipInventoryType = InventoryType.getByPosition(InventoryType.EQUIP, equipItemPosition);
+                final Item equipItem = im.getInventoryByType(equipInventoryType).getItem(equipItemPosition);
+                if (equipItem == null) {
+                    log.error("不存在的七彩棱镜装备道具 {}", equipItemPosition);
+                    return;
+                }
+                final EquipData equipData = equipItem.getEquipData();
+                if (equipData == null) {
+                    log.error("错误的七彩棱镜装备道具 {} ", equipItem.getItemId());
+                    return;
+                }
+                equipData.setPrismColor(newColor);
+                final Optional<InventoryOperation> updateItemResult = im.updateItem(equipItemPosition, equipItem);
+                if (updateItemResult.isEmpty()) {
+                    throw new IllegalStateException(String.format("Could not update equip item %d in position %d", equipItem.getItemId(), equipItemPosition));
+                }
+                user.write(WvsContext.inventoryOperation(updateItemResult.get(), true));
+            }
             case null -> {
                 log.error("Unknown cash item type for item ID : {}", item.getItemId());
                 user.dispose();

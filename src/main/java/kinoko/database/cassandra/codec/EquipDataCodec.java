@@ -56,6 +56,7 @@ public final class EquipDataCodec extends MappingCodec<UdtValue, EquipData> {
         equipData.setEquipSkillId(value.getInt(EquipDataUDT.EQUIP_SKILL_ID));
         equipData.setEquipSkillLevel(value.getInt(EquipDataUDT.EQUIP_SKILL_LEVEL));
         equipData.setEquipSkillExpire(value.getInstant(EquipDataUDT.EQUIP_SKILL_EXPIRE));
+        equipData.setPrismColor(value.getInt(EquipDataUDT.PRISM_COLOR));
         return equipData;
     }
 
@@ -96,6 +97,7 @@ public final class EquipDataCodec extends MappingCodec<UdtValue, EquipData> {
                 .setInt(EquipDataUDT.DURABILITY, equipData.getDurability())
                 .setInt(EquipDataUDT.EQUIP_SKILL_ID, equipData.getEquipSkillId())
                 .setInt(EquipDataUDT.EQUIP_SKILL_LEVEL, equipData.getEquipSkillLevel())
-                .setInstant(EquipDataUDT.EQUIP_SKILL_EXPIRE, equipData.getEquipSkillExpire());
+                .setInstant(EquipDataUDT.EQUIP_SKILL_EXPIRE, equipData.getEquipSkillExpire())
+                .setInt(EquipDataUDT.PRISM_COLOR, equipData.getPrismColor());
     }
 }

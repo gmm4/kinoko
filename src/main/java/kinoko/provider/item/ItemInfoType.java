@@ -74,6 +74,7 @@ public enum ItemInfoType {
     equipSkillId,
     equipSkillLevel,
     equipSkillExpire,
+    prismColor,
 
     success,
     cursed,

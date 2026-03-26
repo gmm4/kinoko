@@ -49,6 +49,9 @@ public final class EquipData {
     private int equipSkillLevel;
     private Instant equipSkillExpire;
 
+    // 七彩棱镜
+    private int prismColor;
+
     public EquipData() {
     }
 
@@ -89,6 +92,7 @@ public final class EquipData {
         this.equipSkillId = equipData.equipSkillId;
         this.equipSkillLevel = equipData.equipSkillLevel;
         this.equipSkillExpire = equipData.equipSkillExpire;
+        this.prismColor = equipData.prismColor;
     }
 
     public void encode(OutPacket outPacket, Item item) {
@@ -139,14 +143,7 @@ public final class EquipData {
         outPacket.encodeInt(getEquipSkillId()); // equipSkill.nSkillID
         outPacket.encodeInt(getEquipSkillLevel()); // equipSkill.nSLV
         outPacket.encodeFT(getEquipSkillExpire()); // equipSkill.tDateExpire
-
-        // 测试代码
-        if(getEquipSkillId()>0){
-            outPacket.encodeInt(0x00603800); // equipSkill.cColorInfo
-        }else{
-            outPacket.encodeInt(0); // equipSkill.cColorInfo
-        }
-
+        outPacket.encodeInt(getPrismColor()); // equipSkill.cColorInfo
     }
 
     public short getIncStr() {
@@ -393,6 +390,10 @@ public final class EquipData {
 
     public void setEquipSkillExpire(Instant equipSkillExpire) { this.equipSkillExpire = equipSkillExpire; }
 
+    public int getPrismColor() { return prismColor; }
+
+    public void setPrismColor(int prismColor) { this.prismColor = prismColor; }
+
     // HELPER METHODS --------------------------------------------------------------------------------------------------
 
     public ItemGrade getItemGrade() {
@@ -557,6 +558,7 @@ public final class EquipData {
         equipData.setEquipSkillId(0);
         equipData.setEquipSkillLevel(0);
         equipData.setEquipSkillExpire(null);
+        equipData.setPrismColor(0);
         return equipData;
     }
 }

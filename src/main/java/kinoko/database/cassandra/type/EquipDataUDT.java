@@ -41,6 +41,7 @@ public final class EquipDataUDT {
     public static final String EQUIP_SKILL_ID = "equip_skill_id";
     public static final String EQUIP_SKILL_LEVEL = "equip_skill_level";
     public static final String EQUIP_SKILL_EXPIRE = "equip_skill_expire";
+    public static final String PRISM_COLOR = "prism_color";
 
     private static final String typeName = "equip_data_type";
 
@@ -84,6 +85,7 @@ public final class EquipDataUDT {
                         .withField(EQUIP_SKILL_ID, DataTypes.INT)
                         .withField(EQUIP_SKILL_LEVEL, DataTypes.INT)
                         .withField(EQUIP_SKILL_EXPIRE, DataTypes.TIMESTAMP)
+                        .withField(PRISM_COLOR, DataTypes.INT)
                         .build()
         );
     }
