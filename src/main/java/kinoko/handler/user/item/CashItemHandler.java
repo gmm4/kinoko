@@ -634,7 +634,7 @@ public final class CashItemHandler extends ItemHandler {
                 }
             }
             case COLORPRISM -> {
-                // 测试代码
+                // 七彩棱镜 测试代码
                 final int equipItemPosition = inPacket.decodeInt(); // nEPOS
                 final int newColor = inPacket.decodeInt(); // cColorInfo
                 // Resolve equip item
@@ -655,6 +655,7 @@ public final class CashItemHandler extends ItemHandler {
                     throw new IllegalStateException(String.format("Could not update equip item %d in position %d", equipItem.getItemId(), equipItemPosition));
                 }
                 user.write(WvsContext.inventoryOperation(updateItemResult.get(), true));
+                user.getField().broadcastPacket(UserRemote.avatarModified(user), user);
             }
             case null -> {
                 log.error("Unknown cash item type for item ID : {}", item.getItemId());

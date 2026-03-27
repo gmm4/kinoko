@@ -21,8 +21,11 @@ public final class AvatarLook implements Encodable {
     private final Map<Integer, Integer> unseenEquip;
     private final int weaponStickerId;
     private final int[] petIds;
+    private final Map<Integer, Integer> hairEquipColor;
+    private final Map<Integer, Integer> unseenEquipColor;
 
-    public AvatarLook(byte gender, byte skin, int hair, int face, Map<Integer, Integer> hairEquip, Map<Integer, Integer> unseenEquip, int weaponStickerId, int[] petIds) {
+    public AvatarLook(byte gender, byte skin, int hair, int face, Map<Integer, Integer> hairEquip, Map<Integer, Integer> unseenEquip, int weaponStickerId, int[] petIds,
+                      Map<Integer, Integer> hairEquipColor, Map<Integer, Integer> unseenEquipColor) {
         this.gender = gender;
         this.skin = skin;
         this.hair = hair;
@@ -31,6 +34,8 @@ public final class AvatarLook implements Encodable {
         this.unseenEquip = unseenEquip;
         this.weaponStickerId = weaponStickerId;
         this.petIds = petIds;
+        this.hairEquipColor = hairEquipColor;
+        this.unseenEquipColor = unseenEquipColor;
     }
 
     @Override
@@ -57,9 +62,15 @@ public final class AvatarLook implements Encodable {
             outPacket.encodeInt(petId); // anPetID
         }
 
-        // 测试代码
-        outPacket.encodeInt(1072001); // 道具ID
-        outPacket.encodeInt(0x00603800); // 道具HSL
+        // 七彩棱镜
+        for (var entry : hairEquipColor.entrySet()) {
+            outPacket.encodeInt(entry.getKey());
+            outPacket.encodeInt(entry.getValue());
+        }
+        for (var entry : unseenEquipColor.entrySet()) {
+            outPacket.encodeInt(entry.getKey());
+            outPacket.encodeInt(entry.getValue());
+        }
         outPacket.encodeInt(0); // 结尾
     }
 
@@ -91,13 +102,15 @@ public final class AvatarLook implements Encodable {
                 inPacket.decodeInt(),
                 inPacket.decodeInt()
         }; // anPetID
-        return new AvatarLook(gender, skin, hair, face, hairEquip, unseenEquip, weaponStickerId, petIds);
+        return new AvatarLook(gender, skin, hair, face, hairEquip, unseenEquip, weaponStickerId, petIds, null, null);
     }
 
     public static AvatarLook from(CharacterStat characterStat, Inventory equipped, Inventory cashInventory) {
         // Equips
         final Map<Integer, Integer> hairEquip = getHairEquip(equipped);
         final Map<Integer, Integer> unseenEquip = getUnseenEquip(equipped, hairEquip);
+        final Map<Integer, Integer> hairEquipColor = getHairEquipColor(equipped);
+        final Map<Integer, Integer> unseenEquipColor = getUnseenEquipColor(equipped, hairEquip);
         // Cash weapon
         final Item cashWeapon = equipped.getItems().get(BodyPart.CASH_WEAPON.getValue());
         final int weaponStickerId = cashWeapon != null ? cashWeapon.getItemId() : 0;
@@ -115,7 +128,9 @@ public final class AvatarLook implements Encodable {
                 hairEquip,
                 unseenEquip,
                 weaponStickerId,
-                petIds
+                petIds,
+                hairEquipColor,
+                unseenEquipColor
         );
     }
 
@@ -148,6 +163,36 @@ public final class AvatarLook implements Encodable {
             }
         }
         return unseenEquip;
+    }
+
+    private static Map<Integer, Integer> getHairEquipColor(Inventory equipped) {
+        final Map<Integer, Integer> hairEquipColor = new HashMap<>();
+        for (var entry : equipped.getItems().entrySet()) {
+            final int bodyPart = entry.getKey();
+            final int itemId = entry.getValue().getItemId();
+            final int colorInfo = entry.getValue().getEquipData().getPrismColor();
+            if (colorInfo != 0 && bodyPart > BodyPart.HAIR.getValue() && bodyPart < BodyPart.EQUIPPED_END.getValue()) {
+                hairEquipColor.put(itemId, colorInfo);
+            } else if (colorInfo != 0 && bodyPart >= BodyPart.CASH_BASE.getValue() && bodyPart < BodyPart.CASH_END.getValue()) {
+                hairEquipColor.put(itemId, colorInfo);
+            }
+        }
+        return hairEquipColor;
+    }
+
+    private static Map<Integer, Integer> getUnseenEquipColor(Inventory equipped, Map<Integer, Integer> hairEquip) {
+        final Map<Integer, Integer> unseenEquipColor = new HashMap<>();
+        for (var entry : equipped.getItems().entrySet()) {
+            final int bodyPart = entry.getKey();
+            if (bodyPart > BodyPart.HAIR.getValue() && bodyPart < BodyPart.EQUIPPED_END.getValue()) {
+                final int itemId = entry.getValue().getItemId();
+                final int colorInfo = entry.getValue().getEquipData().getPrismColor();
+                if (hairEquip.containsKey(bodyPart) && hairEquip.get(bodyPart) != itemId && colorInfo != 0) {
+                    unseenEquipColor.put(itemId, colorInfo);
+                }
+            }
+        }
+        return unseenEquipColor;
     }
 
     private static int getPetId(Inventory cashInventory, long petSn) {
