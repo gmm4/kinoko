@@ -75,7 +75,10 @@ public final class CassandraCharacterAccessor extends CassandraAccessor implemen
         }
         cd.setQuestManager(qm);
 
-        final ConfigManager cm = row.get(CharacterTable.CONFIG, ConfigManager.class);
+        ConfigManager cm = row.get(CharacterTable.CONFIG, ConfigManager.class);
+        if (cm == null) {
+            cm = ConfigManager.defaults();
+        }
         cd.setConfigManager(cm);
 
         final PopularityRecord pr = new PopularityRecord();

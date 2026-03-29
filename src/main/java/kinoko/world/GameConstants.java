@@ -72,7 +72,7 @@ public final class GameConstants {
     public static final int QUICKSLOT_KEY_MAP_SIZE = 62;
     public static final int[] DEFAULT_QUICKSLOT_KEY_MAP = new int[]{
             42, 82, 71, 73, 2, 3, 4, 5, 6, 30, 31, 32, 33, 34, 35, 7, 8, 9, 10, 11, 12, 13, 36, 37, 38, 59, 60, 61, 62, 63, 64,
-            29, 83, 79, 81, 16, 17, 18, 19, 20, 44, 45, 46, 47, 48, 49, 21, 22, 23, 24, 25, 26, 27, 50, 51, 52, 65, 66, 67, 68, 69, 70
+            29, 83, 79, 81, 16, 17, 18, 19, 20, 44, 45, 46, 47, 48, 49, 21, 22, 23, 24, 25, 26, 27, 50, 51, 52, 65, 66, 67, 68, 87, 88
     }; // aDefaultQKM
 
     public static final int UNDEFINED_FIELD_ID = 999999999;
