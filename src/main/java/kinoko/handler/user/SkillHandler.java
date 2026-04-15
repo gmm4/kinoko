@@ -241,7 +241,7 @@ public final class SkillHandler {
                 }
             }
             user.getField().broadcastPacket(UserRemote.effect(user, effect), user);
-        }else{
+        } else {
             // Equip Skill Special Handle
             final Effect effect = Effect.skillUse(skillId, slv, user.getLevel());
             user.write(UserLocal.effect(effect));

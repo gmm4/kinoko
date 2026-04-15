@@ -488,7 +488,9 @@ public final class User extends Life {
             final int skillId = item.getEquipData().getEquipSkillId();
             final int skillLevel = item.getEquipData().getEquipSkillLevel();
             if(skillId > 0){
-                sm.getEquipSkillRecords().merge(skillId, skillLevel, Math::max);
+                if(isEquipSkillMeetRequire(skillId)){
+                    sm.getEquipSkillRecords().merge(skillId, skillLevel, Math::max);
+                }
             }
         }
 
@@ -944,41 +946,58 @@ public final class User extends Life {
         }
     }
 
-    // 传入幸运技能ID，判断幸运技能是否满足WZ配置的前置条件
-    public boolean isEquipSkillMeetRequire(int nEquipSkillID, Map<Integer, Integer> reqSkills){
+    // 传入幸运技能ID，判断幸运技能是否满足WZ配置的前置条件，在穿戴/切换装备时进行判断
+    public boolean isEquipSkillMeetRequire(int nEquipSkillID){
+
+        final Optional<SkillInfo> skillInfoResult = SkillProvider.getSkillInfoById(nEquipSkillID);
+        if(skillInfoResult.isEmpty()){
+            return false;
+        }
+        final SkillInfo skillInfo = skillInfoResult.get();
+
+        final Map<Integer, Integer> reqSkills = skillInfo.getReqSkills();
         if(reqSkills == null || reqSkills.isEmpty()){
             return true;
         }
 
-        return reqSkills.entrySet().stream().allMatch(entry -> {
-           int requiredSkillID = entry.getKey();
-           int requiredLevel = entry.getValue();
-           return getSkillLevel(requiredSkillID) >= requiredLevel;
-        });
+        for (var entry : reqSkills.entrySet()) {
+            int reqSkillId = entry.getKey();
+            int reqLevel = entry.getValue();
+            if(reqLevel > 0){
+                if(getSkillLevel(reqSkillId) < reqLevel){
+                    return false;
+                }
+            } else if (reqLevel == -1){
+                final Optional<SkillInfo> reqSkillInfoResult = SkillProvider.getSkillInfoById(reqSkillId);
+                if(reqSkillInfoResult.isPresent()){
+                    final SkillInfo reqSkillInfo = reqSkillInfoResult.get();
+                    if(getSkillLevel(reqSkillId) < reqSkillInfo.getMaxLevel()){
+                        return false;
+                    }
+                }
+            }
+        }
+
+        return true;
     }
 
     public boolean isEquipSkillActive(int nEquipSkillID){
         return isEquipSkillActive(0, nEquipSkillID);
     }
-    // 传入原始技能ID和幸运技能ID，判断幸运技能是否满足所有前置条件
+    // 传入原始技能ID和幸运技能ID，判断幸运技能是否被激活
     public boolean isEquipSkillActive(int nSkillID, int nEquipSkillID){
 
-        // Resolve skill info
-        Map<Integer, Integer> reqSkills = SkillProvider.getSkillInfoById(nEquipSkillID)
-                .map(SkillInfo::getReqSkills)
-                .orElse(Collections.emptyMap());
-
-        boolean result = isEquipSkillMeetRequire(nEquipSkillID, reqSkills);
-
-        switch (nEquipSkillID){
-            // 特殊情况特殊判断的幸运技能
-            case 1001204: // 战士 强力攻击 终极猎人
-            case 1001205: // 战士 群体攻击 终极猎人
-                result &= (getSkillLevel(1100002) >= 30 || getSkillLevel(1200002) >= 30 || getSkillLevel(1300002) >= 30);
-                break;
+        if(!getSkillManager().getEquipSkillRecords().containsKey(nEquipSkillID)){
+            return false;
         }
 
-        return result;
+        return switch (nEquipSkillID) {
+            // 特殊情况特殊判断的幸运技能
+            // 战士 强力攻击 终极猎人
+            case 1001204, 1001205 -> // 战士 群体攻击 终极猎人
+                    (getSkillLevel(1100002) >= 30 || getSkillLevel(1200002) >= 30 || getSkillLevel(1300002) >= 30);
+            default -> true;
+        };
     }
 
 

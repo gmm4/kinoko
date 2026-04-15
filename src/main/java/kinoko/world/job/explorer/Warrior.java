@@ -53,7 +53,7 @@ public final class Warrior extends SkillProcessor {
     public static final int COMA = 1111005;
     public static final int MAGIC_CRASH_HERO = 1111007;
     public static final int SHOUT = 1111008;
-    public static final int BRANDISH = 1111010;
+    public static final int BRANDISH_DISCARD = 1111010;
     // HERO
     public static final int ADVANCED_COMBO_ATTACK = 1120003;
     public static final int ACHILLES_HERO = 1120004;
@@ -65,6 +65,8 @@ public final class Warrior extends SkillProcessor {
     public static final int INTREPID_SLASH = 1121008;
     public static final int ENRAGE = 1121010;
     public static final int HEROS_WILL_HERO = 1121011;
+    public static final int BRANDISH = 1121013;
+
     // PAGE
     public static final int WEAPON_MASTERY_PALADIN = 1200000;
     public static final int FINAL_ATTACK_PALADIN = 1200002;
