@@ -607,6 +607,8 @@ public final class SkillConstants {
             case 33121009:
             case 35001001:
             case 35101009:
+                // 新增KeyDownSkill
+            case 1311306:
                 return true;
             default:
                 return false;
@@ -775,6 +777,8 @@ public final class SkillConstants {
             case 3001005 -> new int[]{3001105}; // 弓箭手 二连箭
             case 4001334 -> new int[]{4001434}; // 飞侠 二连击
             case 4001344 -> new int[]{4001444}; // 飞侠 双飞斩
+            case 4201005 -> new int[]{4201205}; // 侠客 回旋斩
+            case 4211002 -> new int[]{4211302}; // 飞侠 落叶斩
             case 5001002 -> new int[]{5001102}; // 海盗 半月踢
             case 5001003 -> new int[]{5001103}; // 海盗 双弹射击
             default -> new int[0];

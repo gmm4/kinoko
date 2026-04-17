@@ -52,6 +52,8 @@ import kinoko.world.user.stat.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import static kinoko.world.skill.SkillManager.getSkillLevel;
+
 public final class AdminCommands {
     @Command("test")
     public static void test(User user, String[] args) {
@@ -799,6 +801,21 @@ public final class AdminCommands {
         user.updatePassiveSkillData();
         user.validateStat();
         user.write(WvsContext.changeSkillRecordResult(skillRecord, true));
+    }
+
+    @Command("skillCheck")
+    @Arguments({"skill ID"})
+    public static void skillCheck(User user, String[] args) {
+        final int skillId = Integer.parseInt(args[1]);
+        final Optional<SkillInfo> skillInfoResult = SkillProvider.getSkillInfoById(skillId);
+        if (skillInfoResult.isEmpty()) {
+            user.write(MessagePacket.system("Could not find skill : %d", skillId));
+            return;
+        }
+        final SkillInfo si = skillInfoResult.get();
+        final SkillManager sm = user.getSkillManager();
+        final int slv = getSkillLevel(user.getSecondaryStat(), sm, skillId);
+        user.write(MessagePacket.system("Skill current level : %d", slv));
     }
 
     @Command("morph")

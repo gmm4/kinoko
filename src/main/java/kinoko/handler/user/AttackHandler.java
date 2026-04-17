@@ -95,6 +95,7 @@ public final class AttackHandler {
         inPacket.decodeByte(); // nAttackActionType
         attack.attackSpeed = inPacket.decodeByte(); // nAttackSpeed
         inPacket.decodeInt(); // tAttackTime
+        attack.isMultiHitOverflowAttack = inPacket.decodeByte();
         inPacket.decodeInt(); // dwID
 
         decodeMobAttackInfo(inPacket, attack);
@@ -285,9 +286,17 @@ public final class AttackHandler {
                 }
             } else {
                 ai.delay = Math.min(inPacket.decodeShort(), 1000); // tDelay
-                for (int j = 0; j < attack.getDamagePerMob(); j++) {
-                    ai.damage[j] = inPacket.decodeInt();
+                if(attack.isMultiHitOverflowAttack == (byte)1){
+                    final int damagePerMob = inPacket.decodeShort();
+                    for (int j = 0; j < damagePerMob; j++) {
+                        ai.damage[j] = inPacket.decodeInt();
+                    }
+                } else {
+                    for (int j = 0; j < attack.getDamagePerMob(); j++) {
+                        ai.damage[j] = inPacket.decodeInt();
+                    }
                 }
+
             }
             inPacket.decodeInt(); // CMob::GetCrc
             attack.getAttackInfo().add(ai);

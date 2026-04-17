@@ -963,17 +963,17 @@ public final class User extends Life {
         for (var entry : reqSkills.entrySet()) {
             int reqSkillId = entry.getKey();
             int reqLevel = entry.getValue();
-            if(reqLevel > 0){
-                if(getSkillLevel(reqSkillId) < reqLevel){
-                    return false;
-                }
-            } else if (reqLevel == -1){
+            if(reqLevel == 99){
                 final Optional<SkillInfo> reqSkillInfoResult = SkillProvider.getSkillInfoById(reqSkillId);
                 if(reqSkillInfoResult.isPresent()){
                     final SkillInfo reqSkillInfo = reqSkillInfoResult.get();
                     if(getSkillLevel(reqSkillId) < reqSkillInfo.getMaxLevel()){
                         return false;
                     }
+                }
+            } else if (reqLevel > 0) {
+                if(getSkillLevel(reqSkillId) < reqLevel){
+                    return false;
                 }
             }
         }

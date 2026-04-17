@@ -39,6 +39,8 @@ public final class Attack {
     public int[] drops;
     public int dropExplodeDelay;
 
+    public byte isMultiHitOverflowAttack = 0;
+
     public int crc;
 
     public Attack(OutHeader headerType) {
