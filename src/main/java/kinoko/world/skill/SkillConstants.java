@@ -771,6 +771,7 @@ public final class SkillConstants {
             case 1001005 -> new int[]{1001105, 1001205}; // 战士 群体攻击
             case 1101004 -> new int[]{1101104}; // 剑客 快速剑
             case 1101005 -> new int[]{1101105}; // 剑客 快速斧
+            case 1111008 -> new int[]{1111108}; // 勇士 虎咆啸
             case 1321003 -> new int[]{1321103}; // 黑骑士 突进
             case 2001004 -> new int[]{2001104}; // 法师 魔法弹
             case 3001004 -> new int[]{3001104}; // 弓箭手 断魂箭
