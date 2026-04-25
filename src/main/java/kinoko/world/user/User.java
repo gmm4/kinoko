@@ -520,6 +520,7 @@ public final class User extends Life {
 
         // SecondaryStat::SetFrom
         getSecondaryStat().setFrom(getBasicStat(), getForcedStat(), getSecondaryStat(), getSkillManager(), realEquip);
+
         // SecondaryStat for Equip Skill
         final Item weapon = realEquip.get(BodyPart.WEAPON.getValue());
         final WeaponType wt = WeaponType.getByItemId(weapon != null ? weapon.getItemId() : 0);

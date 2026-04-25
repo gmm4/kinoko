@@ -244,6 +244,7 @@ public abstract class SkillProcessor {
             case Warrior.RAGE:
             case DawnWarrior.RAGE:
                 user.setTemporaryStat(CharacterTemporaryStat.PAD, TemporaryStatOption.of(si.getValue(SkillStat.pad, slv), skillId, si.getDuration(slv)));
+                user.setTemporaryStat(CharacterTemporaryStat.PDD, TemporaryStatOption.of(si.getValue(SkillStat.pdd, slv), skillId, si.getDuration(slv)));
                 return;
             case Warrior.COMBO_ATTACK:
             case DawnWarrior.COMBO_ATTACK:
